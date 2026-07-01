@@ -38,7 +38,14 @@ def main() -> None:
     subparsers.add_parser("full", help="Run the full experiment suite.")
 
     subparsers.add_parser(
-        "figures", help="Render IEEE-style figures from existing CSV tables."
+        "figures",
+        help=(
+            "Validate the frozen result tables and render the IEEE-style figures."
+        ),
+    )
+    subparsers.add_parser(
+        "check-figures",
+        help="Check that IEEE figure tables match the frozen reference protocol.",
     )
 
     figure_pipeline = subparsers.add_parser(
@@ -70,6 +77,8 @@ def main() -> None:
         run_command([sys.executable, str(ROOT / "experiments" / "run_all.py")])
     elif args.command == "figures":
         run_command([sys.executable, str(ROOT / "experiments" / "render_ieee_figures.py")])
+    elif args.command == "check-figures":
+        run_command([sys.executable, str(ROOT / "scripts" / "check_ieee_figure_data.py")])
     elif args.command == "figure-pipeline":
         run_command(
             [

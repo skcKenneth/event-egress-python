@@ -105,14 +105,33 @@ outputs/tables/
 outputs/figures/
 ```
 
-These directories are intentionally empty in the distributed project.
+The project includes the frozen CSV tables used by the bundled IEEE figures. New experiment runs may overwrite tables with the same names, so validate the figure inputs before rendering.
 
 ## IEEE-style figures
 
-The compact double-column figure set is generated entirely in Python.
-The renderer reads CSV result tables and writes both vector PDF and 600-dpi PNG files.
+The compact double-column figure set is generated entirely in Python. The renderer reads CSV result tables and writes both vector PDF and 600-dpi PNG files.
 
-Generate all required result tables with the validation settings and then render:
+The bundled tables follow one frozen protocol:
+
+- final validation: 200 seeds per policy, seeds 90000--90199;
+- information map: 50 paired seeds per cell, seeds 96000--96049;
+- time-step sensitivity: 50 seeds per step and policy;
+- residual-spread ablation: 50 paired seeds per cell;
+- clipped-lognormal diagnostic: 1,000,000 samples.
+
+Check the tables before rendering:
+
+```bash
+python main.py check-figures
+```
+
+Render the figures from the validated bundled tables:
+
+```bash
+python main.py figures
+```
+
+Regenerate every required table with the frozen protocol and then render:
 
 ```bash
 python main.py figure-pipeline --workers 8
@@ -129,10 +148,12 @@ outputs/figures/ieee/fig3_context_validation.pdf
 outputs/figures/ieee/fig3_context_validation.png
 ```
 
-To render from CSV tables that already exist:
+Strict validation is enabled by default. It rejects quick or partial result tables instead of silently producing figures with different values. Exploratory tables can still be rendered explicitly to a separate directory:
 
 ```bash
-python main.py figures
+python experiments/render_ieee_figures.py \
+  --allow-nonreference \
+  --output outputs/figures/ieee-development
 ```
 
-The style module is `src/egress_sim/ieee_style.py`. It fixes the IEEE double-column width at 7.16 inches, uses compact serif typography and STIX mathematics, embeds TrueType fonts in PDF, and exports PNG at 600 dpi. The actual multi-panel layouts are defined in `experiments/render_ieee_figures.py`.
+The style module is `src/egress_sim/ieee_style.py`. It fixes the IEEE double-column width at 7.16 inches, uses compact serif typography and STIX mathematics, embeds TrueType fonts in PDF, and exports PNG at 600 dpi. The multi-panel layouts are defined in `experiments/render_ieee_figures.py`, and the protocol checks are in `src/egress_sim/figure_protocol.py`.

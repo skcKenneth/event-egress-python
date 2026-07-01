@@ -21,7 +21,7 @@ COMPLIANCE_LEVELS = (0.35, 0.50, 0.68, 0.85)
 POLICY_SEED_OFFSET = 1_000_003
 
 
-def run(seed_count: int = 100, workers: int = DEFAULT_WORKERS) -> None:
+def run(seed_count: int = 50, workers: int = DEFAULT_WORKERS) -> None:
     spec = load_spec(ROOT / "config" / "default.json")
     tables, _ = ensure_output_directories(ROOT)
     seeds = range(SEED_START, SEED_START + seed_count)
@@ -71,7 +71,7 @@ def run(seed_count: int = 100, workers: int = DEFAULT_WORKERS) -> None:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--seeds", type=int, default=100)
+    parser.add_argument("--seeds", type=int, default=50)
     parser.add_argument("--workers", type=int, default=DEFAULT_WORKERS)
     args = parser.parse_args()
     run(args.seeds, args.workers)

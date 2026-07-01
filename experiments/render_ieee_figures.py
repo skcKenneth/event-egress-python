@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import argparse
 
 import matplotlib
 
@@ -15,6 +16,7 @@ from matplotlib.patches import FancyArrowPatch, FancyBboxPatch, Rectangle
 
 from _bootstrap import ROOT
 
+from egress_sim.figure_protocol import validate_reference_figure_inputs
 from egress_sim.ieee_style import (
     BLUE,
     BLUE_LIGHT,
@@ -28,27 +30,6 @@ from egress_sim.ieee_style import (
     save_ieee,
     use_ieee_style,
 )
-
-
-REQUIRED_TABLES = (
-    "information_regime_map_summary.csv",
-    "information_value_validation_runs.csv",
-    "information_value_validation_effects.csv",
-    "time_step_sensitivity_effects.csv",
-    "residual_spread_ablation_effects.csv",
-    "clipped_lognormal_diagnostic.csv",
-)
-
-
-def validate_inputs(tables: Path) -> None:
-    missing = [name for name in REQUIRED_TABLES if not (tables / name).exists()]
-    if missing:
-        joined = "\n  - ".join(missing)
-        raise FileNotFoundError(
-            "Missing figure-data tables:\n  - " + joined +
-            "\nRun experiments/run_ieee_figure_pipeline.py first, "
-            "or generate the listed experiments individually."
-        )
 
 
 def panel_title(ax: plt.Axes, letter: str, title: str) -> None:
@@ -427,12 +408,44 @@ def figure3(tables: Path, out: Path) -> None:
     save_ieee(fig, out / "fig3_context_validation")
 
 
-if __name__ == "__main__":
-    tables = ROOT / "outputs" / "tables"
-    output = ROOT / "outputs" / "figures" / "ieee"
+def render_all(tables: Path, output: Path, *, strict: bool = True) -> None:
+    tables = Path(tables)
+    output = Path(output)
     output.mkdir(parents=True, exist_ok=True)
-    validate_inputs(tables)
+    if strict:
+        validate_reference_figure_inputs(tables)
     figure1(tables, output)
     figure2(tables, output)
     figure3(tables, output)
-    print(f"Wrote IEEE figures to {output}")
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description=(
+            "Render the three compact IEEE-style figures. By default the "
+            "input tables must match the frozen reference protocol."
+        )
+    )
+    parser.add_argument(
+        "--tables",
+        type=Path,
+        default=ROOT / "outputs" / "tables",
+        help="Directory containing the figure-input CSV tables.",
+    )
+    parser.add_argument(
+        "--output",
+        type=Path,
+        default=ROOT / "outputs" / "figures" / "ieee",
+        help="Output directory for PDF and PNG figures.",
+    )
+    parser.add_argument(
+        "--allow-nonreference",
+        action="store_true",
+        help=(
+            "Render quick or exploratory tables without checking the frozen "
+            "seed counts and reference values. Use a separate output directory."
+        ),
+    )
+    args = parser.parse_args()
+    render_all(args.tables, args.output, strict=not args.allow_nonreference)
+    print(f"Wrote IEEE figures to {args.output}")
