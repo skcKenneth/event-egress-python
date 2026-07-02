@@ -49,9 +49,50 @@ def rounded_box(
     color: str = INK,
     zorder: int = 3,
     linespacing: float = 1.0,
-) -> None:
+    auto_fit: bool = False,
+    safety_pad: tuple[float, float] = (0.0, 0.0),
+) -> tuple[float, float, float, float]:
+    """Draw a rounded label box and optionally size it from the rendered text.
+
+    ``safety_pad`` is expressed in the axes' data coordinates.  All schematic
+    panels use a 0--1 coordinate system, so a horizontal value of 0.03 gives
+    three percent of the panel width on each side of the rendered text.
+    """
     x, y = xy
     w, h = wh
+    center_x = x + w / 2
+    center_y = y + h / 2
+
+    label = ax.text(
+        center_x,
+        center_y,
+        text,
+        ha="center",
+        va="center",
+        fontsize=fontsize,
+        fontweight=weight,
+        color=color,
+        linespacing=linespacing,
+        zorder=zorder + 1,
+        clip_on=False,
+    )
+
+    if auto_fit:
+        # Measure the actual rendered glyphs rather than estimating width from
+        # character count.  This remains reliable if the font or label changes.
+        ax.figure.canvas.draw()
+        renderer = ax.figure.canvas.get_renderer()
+        bounds = label.get_window_extent(renderer=renderer)
+        inv = ax.transData.inverted()
+        (text_x0, text_y0), (text_x1, text_y1) = inv.transform(
+            ((bounds.x0, bounds.y0), (bounds.x1, bounds.y1))
+        )
+        pad_x, pad_y = safety_pad
+        w = max(w, (text_x1 - text_x0) + 2.0 * pad_x)
+        h = max(h, (text_y1 - text_y0) + 2.0 * pad_y)
+        x = center_x - w / 2
+        y = center_y - h / 2
+
     ax.add_patch(
         FancyBboxPatch(
             (x, y),
@@ -62,20 +103,10 @@ def rounded_box(
             edgecolor=edge,
             linewidth=0.8,
             zorder=zorder,
+            clip_on=False,
         )
     )
-    ax.text(
-        x + w / 2,
-        y + h / 2,
-        text,
-        ha="center",
-        va="center",
-        fontsize=fontsize,
-        fontweight=weight,
-        color=color,
-        linespacing=linespacing,
-        zorder=zorder + 1,
-    )
+    return x, y, w, h
 
 
 def arrow(ax: plt.Axes, start: tuple[float, float], end: tuple[float, float], *, color: str, lw: float = 0.9) -> None:
@@ -106,13 +137,25 @@ def draw_network_panel(ax: plt.Axes) -> None:
     for label, y in zones:
         rounded_box(ax, (0.03, y - 0.047), (0.20, 0.094), label, face=ORANGE_LIGHT, edge=ORANGE, fontsize=5.25, linespacing=1.08)
     rounded_box(ax, (0.35, 0.20), (0.26, 0.58), "queue\nstate\n$R,Q,Y,W,D$", face="#F7F8FA", edge="#C8CDD7", fontsize=5.8, linespacing=1.06)
+    exit_boxes: dict[str, tuple[float, float, float, float]] = {}
     for label, y in exits:
-        rounded_box(ax, (0.77, y - 0.047), (0.18, 0.094), label, face=BLUE_LIGHT, edge=BLUE, fontsize=5.7)
+        exit_boxes[label] = rounded_box(
+            ax,
+            (0.77, y - 0.047),
+            (0.18, 0.094),
+            label,
+            face=BLUE_LIGHT,
+            edge=BLUE,
+            fontsize=5.7,
+            auto_fit=True,
+            safety_pad=(0.035, 0.014),
+        )
 
     for _, y in zones:
         arrow(ax, (0.23, y), (0.35, y), color=ORANGE if y in (0.60, 0.40) else BLUE, lw=1.0)
     for label, y in exits:
-        arrow(ax, (0.61, y), (0.77, y), color=BLUE if label != "Corridor C" else ORANGE, lw=1.15)
+        left_edge = exit_boxes[label][0]
+        arrow(ax, (0.61, y), (left_edge, y), color=BLUE if label != "Corridor C" else ORANGE, lw=1.15)
 
     ax.text(0.48, 0.075, "conserved queue state", ha="center", fontsize=5.4, color=MUTED)
 

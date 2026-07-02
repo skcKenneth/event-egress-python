@@ -157,3 +157,11 @@ python experiments/render_ieee_figures.py \
 ```
 
 The style module is `src/egress_sim/ieee_style.py`. It fixes the IEEE double-column width at 7.16 inches, uses compact serif typography and STIX mathematics, embeds TrueType fonts in PDF, and exports PNG at 600 dpi. The multi-panel layouts are defined in `experiments/render_ieee_figures.py`, and the protocol checks are in `src/egress_sim/figure_protocol.py`.
+
+### Automatic label safety padding
+
+The IEEE system-overview renderer measures the actual rendered label glyphs for
+Corridor A--C and enlarges each rounded rectangle when needed.  The current
+safety margin is 3.5% of the schematic panel width on each horizontal side, so
+font substitutions or future label edits do not touch the border.  Arrow end
+points are taken from the fitted rectangle geometry.
