@@ -108,7 +108,7 @@ def run(seed_count: int = 30, workers: int = 8) -> None:
     tables, _ = ensure_output_directories(ROOT)
     variants = (
         PolicyVariant("deterministic_load_balance", "deterministic_load_balance", {}),
-        PolicyVariant("scenario_mean_only", "scenario_mean_only", {}),
+        PolicyVariant("conditioned_mean_equal_spread", "conditioned_mean_equal_spread", {}),
         PolicyVariant("robust_rolling_horizon", "robust_rolling_horizon", {}),
         PolicyVariant("change_triggered_fallback", "change_triggered_fallback", {}),
     )
@@ -127,7 +127,7 @@ def run(seed_count: int = 30, workers: int = 8) -> None:
         frame["condition"] = condition
         frames.append(frame)
         for proposed, baseline in (
-            ("scenario_mean_only", "deterministic_load_balance"),
+            ("conditioned_mean_equal_spread", "deterministic_load_balance"),
             ("robust_rolling_horizon", "deterministic_load_balance"),
             ("change_triggered_fallback", "deterministic_load_balance"),
             ("change_triggered_fallback", "robust_rolling_horizon"),

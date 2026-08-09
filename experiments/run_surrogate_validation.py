@@ -9,6 +9,7 @@ import pandas as pd
 
 from _bootstrap import ROOT
 
+from egress_sim.analysis import spec_with_uncertainty_overrides
 from egress_sim.config import load_spec
 from egress_sim.model import EgressState, Scenario, advance_state, current_peak_density, initial_state
 from egress_sim.policies import RobustRollingHorizonPolicy
@@ -78,19 +79,12 @@ def _collect_state(
     spec,
     *,
     seed: int,
-    capacity_log_sigma: float,
-    compliance_mean: float,
     state_time_seconds: float,
     nonstationary: bool,
 ) -> tuple[EgressState, Scenario]:
     scenario_rng = np.random.default_rng(seed)
     policy_rng = np.random.default_rng(seed + 1_000_003)
-    scenario = sample_scenario(
-        spec,
-        scenario_rng,
-        capacity_log_sigma=capacity_log_sigma,
-        compliance_mean=compliance_mean,
-    )
+    scenario = sample_scenario(spec, scenario_rng)
     policy = RobustRollingHorizonPolicy()
     state = initial_state(spec)
     recommendation = state.last_recommendation.copy()
@@ -154,7 +148,7 @@ def _summarize(group: pd.DataFrame) -> dict[str, float]:
 
 def run(seed_count: int = 8, workers: int = 1) -> None:
     del workers
-    spec = load_spec(ROOT / "config" / "default.json")
+    base_spec = load_spec(ROOT / "config" / "default.json")
     tables = ROOT / "outputs" / "tables"
     tables.mkdir(parents=True, exist_ok=True)
     conditions = (
@@ -165,13 +159,16 @@ def run(seed_count: int = 8, workers: int = 1) -> None:
     )
     rows = []
     for condition, sigma, compliance, nonstationary in conditions:
+        spec = spec_with_uncertainty_overrides(
+            base_spec,
+            capacity_log_sigma=sigma,
+            compliance_mean=compliance,
+        )
         for seed in range(70_000, 70_000 + seed_count):
             for state_seconds in STATE_SECONDS:
                 state, _ = _collect_state(
                     spec,
                     seed=seed,
-                    capacity_log_sigma=sigma,
-                    compliance_mean=compliance,
                     state_time_seconds=state_seconds,
                     nonstationary=nonstationary,
                 )

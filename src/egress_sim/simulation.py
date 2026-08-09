@@ -22,6 +22,12 @@ class SimulationResult:
     recommendation_changes: float
     fallback_decisions: int
     mass_balance_error: float
+    capacity_mae: float
+    path_capacity_mae: float
+    exit_capacity_mae: float
+    capacity_observed_fraction: float
+    path_observed_fraction: float
+    exit_observed_fraction: float
     history: tuple[dict[str, float], ...]
 
     def summary(self) -> dict[str, float | int | str | bool]:
@@ -37,7 +43,40 @@ class SimulationResult:
             "recommendation_changes": self.recommendation_changes,
             "fallback_decisions": self.fallback_decisions,
             "mass_balance_error": self.mass_balance_error,
+            "capacity_mae": self.capacity_mae,
+            "path_capacity_mae": self.path_capacity_mae,
+            "exit_capacity_mae": self.exit_capacity_mae,
+            "capacity_observed_fraction": self.capacity_observed_fraction,
+            "path_observed_fraction": self.path_observed_fraction,
+            "exit_observed_fraction": self.exit_observed_fraction,
         }
+
+
+def _capacity_diagnostics(
+    state: EgressState,
+    scenario: Scenario,
+) -> dict[str, float]:
+    path_error = np.abs(
+        state.path_capacity_estimate - scenario.path_capacity_multiplier
+    )
+    exit_error = np.abs(
+        state.exit_capacity_estimate - scenario.exit_capacity_multiplier
+    )
+    path_observed = state.path_saturated_observation_count > 0
+    exit_observed = state.exit_saturated_observation_count > 0
+    total_links = path_error.size + exit_error.size
+    return {
+        "path_capacity_mae": float(np.mean(path_error)),
+        "exit_capacity_mae": float(np.mean(exit_error)),
+        "capacity_mae": float(
+            (float(np.sum(path_error)) + float(np.sum(exit_error))) / total_links
+        ),
+        "path_observed_fraction": float(np.mean(path_observed)),
+        "exit_observed_fraction": float(np.mean(exit_observed)),
+        "capacity_observed_fraction": float(
+            (int(np.sum(path_observed)) + int(np.sum(exit_observed))) / total_links
+        ),
+    }
 
 
 def run_simulation(
@@ -71,6 +110,7 @@ def run_simulation(
     recommendation = state.last_recommendation.copy()
     history: list[dict[str, float]] = []
     max_steps = int(np.ceil(spec.maximum_duration_seconds / spec.time_step_seconds))
+    last_step_scenario = actual_scenario
 
     for step in range(max_steps):
         if step % spec.control_interval_steps == 0:
@@ -80,19 +120,31 @@ def run_simulation(
             temporary_exit_index is not None
             and temporary_start_seconds <= state.elapsed_seconds < temporary_end_seconds
         ):
-            duration = max(temporary_end_seconds - temporary_start_seconds, spec.time_step_seconds)
+            duration = max(
+                temporary_end_seconds - temporary_start_seconds,
+                spec.time_step_seconds,
+            )
             progress = min(
                 1.0,
-                max(0.0, (state.elapsed_seconds - temporary_start_seconds) / duration),
+                max(
+                    0.0,
+                    (state.elapsed_seconds - temporary_start_seconds) / duration,
+                ),
             )
             if temporary_profile == "abrupt":
                 factor = temporary_capacity_factor
             elif temporary_profile == "gradual":
                 factor = 1.0 + (temporary_capacity_factor - 1.0) * progress
             elif temporary_profile == "recovery":
-                factor = temporary_capacity_factor + (1.0 - temporary_capacity_factor) * progress
+                factor = temporary_capacity_factor + (
+                    1.0 - temporary_capacity_factor
+                ) * progress
             elif temporary_profile == "piecewise":
-                factor = temporary_capacity_factor if progress < 0.5 else (1.0 + temporary_capacity_factor) / 2.0
+                factor = (
+                    temporary_capacity_factor
+                    if progress < 0.5
+                    else (1.0 + temporary_capacity_factor) / 2.0
+                )
             else:
                 raise ValueError(f"unknown temporary_profile: {temporary_profile}")
             path_multiplier = actual_scenario.path_capacity_multiplier.copy()
@@ -103,8 +155,14 @@ def run_simulation(
                 exit_multiplier[temporary_exit_index] *= factor
             if temporary_scope not in ("both", "path_only", "exit_only"):
                 raise ValueError(f"unknown temporary_scope: {temporary_scope}")
-            step_scenario = Scenario(path_multiplier, exit_multiplier, actual_scenario.compliance)
+            step_scenario = Scenario(
+                path_multiplier,
+                exit_multiplier,
+                actual_scenario.compliance,
+            )
+        last_step_scenario = step_scenario
         diagnostics = advance_state(state, spec, recommendation, step_scenario)
+        capacity = _capacity_diagnostics(state, step_scenario)
         history.append(
             {
                 "time_seconds": state.elapsed_seconds,
@@ -113,8 +171,15 @@ def run_simulation(
                 "in_transit": float(np.sum(state.transit)),
                 "exit_queue": float(np.sum(state.exit_queue)),
                 "cleared": state.cleared,
-                "active_population": diagnostics["active_population"],
-                "density_per_m2": diagnostics["density"],
+                "active_population": float(diagnostics["active_population"]),
+                "density_per_m2": float(diagnostics["density"]),
+                "path_saturation_fraction": float(
+                    diagnostics["path_saturation_fraction"]
+                ),
+                "exit_saturation_fraction": float(
+                    diagnostics["exit_saturation_fraction"]
+                ),
+                **capacity,
             }
         )
         if state.active_population <= 1e-8:
@@ -123,6 +188,7 @@ def run_simulation(
     completed = state.active_population <= 1e-8
     mass_error = abs(state.active_population + state.cleared - spec.total_population)
     mean_clearance = state.person_seconds / max(spec.total_population, 1.0)
+    final_capacity = _capacity_diagnostics(state, last_step_scenario)
     return SimulationResult(
         policy=policy.name,
         seed=seed,
@@ -136,4 +202,5 @@ def run_simulation(
         fallback_decisions=int(getattr(policy, "fallback_decisions", 0)),
         mass_balance_error=mass_error,
         history=tuple(history),
+        **final_capacity,
     )

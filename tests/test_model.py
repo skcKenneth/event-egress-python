@@ -10,12 +10,15 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
+sys.path.insert(0, str(ROOT / "experiments"))
 
 from egress_sim.config import RobustControlSpec, load_spec
 from egress_sim.analysis import spec_with_uncertainty_overrides
 from egress_sim.model import advance_state, initial_state
 from egress_sim.policies import (
     ChangeTriggeredFallbackPolicy,
+    ConditionedMeanPolicy,
+    ContractedSpreadMeanPolicy,
     DeterministicLoadBalancePolicy,
     OracleCapacityMeanPolicy,
     OracleCapacityPolicy,
@@ -28,6 +31,7 @@ from egress_sim.policies import (
 )
 from egress_sim.simulation import run_simulation
 from egress_sim.uncertainty import nominal_scenario
+from run_time_step_sensitivity import spec_with_time_step
 
 
 class EgressModelTests(unittest.TestCase):
@@ -78,6 +82,36 @@ class EgressModelTests(unittest.TestCase):
         np.testing.assert_allclose(recommendation.sum(axis=1), 1.0)
         self.assertTrue(np.all(recommendation >= 0.0))
 
+    def test_batched_rollout_costs_match_scalar_reference(self) -> None:
+        small_control = replace(
+            self.spec.robust_control,
+            prediction_scenarios=3,
+            candidate_count=6,
+            rollout_steps=8,
+        )
+        spec = replace(self.spec, robust_control=small_control)
+        state = initial_state(spec)
+        actual = nominal_scenario(spec)
+        for _ in range(10):
+            advance_state(state, spec, spec.habitual_matrix, actual)
+        policy = ConditionedMeanPolicy()
+        candidates = policy._candidate_recommendations(
+            state, spec, np.random.default_rng(1011)
+        )
+        scenarios = policy._prediction_scenarios(
+            state, spec, np.random.default_rng(1012)
+        )
+        scalar = np.asarray(
+            [
+                [policy._scenario_cost(state, spec, candidate, scenario) for scenario in scenarios]
+                for candidate in candidates
+            ]
+        )
+        batched = policy._batched_scenario_costs(
+            state, spec, candidates, scenarios
+        )
+        np.testing.assert_allclose(batched, scalar, rtol=1e-12, atol=1e-12)
+
     def test_candidate_generation_is_normalized_and_ordered(self) -> None:
         state = initial_state(self.spec)
         rng = np.random.default_rng(23)
@@ -109,11 +143,216 @@ class EgressModelTests(unittest.TestCase):
         for cond, uncond in zip(cond_candidates, uncond_candidates, strict=True):
             np.testing.assert_allclose(cond, uncond)
 
+    def test_primary_predictions_change_only_the_capacity_center(self) -> None:
+        uncertainty = replace(
+            self.spec.uncertainty,
+            capacity_log_sigma=0.05,
+            capacity_multiplier_min=0.01,
+            capacity_multiplier_max=10.0,
+        )
+        spec = replace(self.spec, uncertainty=uncertainty)
+        state = initial_state(spec)
+        state.path_capacity_estimate[:] = 0.80
+        state.exit_capacity_estimate[:] = 0.90
+        conditioned = ConditionedMeanPolicy()._prediction_scenarios(
+            state, spec, np.random.default_rng(7301)
+        )
+        unconditioned = UnconditionedMeanPolicy()._prediction_scenarios(
+            state, spec, np.random.default_rng(7301)
+        )
+        for cond, uncond in zip(conditioned, unconditioned, strict=True):
+            np.testing.assert_allclose(
+                cond.path_capacity_multiplier / state.path_capacity_estimate,
+                uncond.path_capacity_multiplier,
+            )
+            np.testing.assert_allclose(
+                cond.exit_capacity_multiplier / state.exit_capacity_estimate,
+                uncond.exit_capacity_multiplier,
+            )
+            np.testing.assert_allclose(cond.compliance, uncond.compliance)
+
+    def test_decision_substreams_keep_scenario_draws_aligned_under_sensor_noise(self) -> None:
+        uncertainty = replace(
+            self.spec.uncertainty,
+            capacity_log_sigma=0.05,
+            capacity_multiplier_min=0.01,
+            capacity_multiplier_max=10.0,
+        )
+        small_control = replace(
+            self.spec.robust_control,
+            prediction_scenarios=3,
+            candidate_count=6,
+            rollout_steps=1,
+        )
+        spec = replace(
+            self.spec,
+            uncertainty=uncertainty,
+            robust_control=small_control,
+        )
+
+        class CapturingPolicy(ConditionedMeanPolicy):
+            def _decision_state(self, state, spec, rng):
+                observed = super()._decision_state(state, spec, rng)
+                self.captured_path_center = observed.path_capacity_estimate.copy()
+                self.captured_exit_center = observed.exit_capacity_estimate.copy()
+                return observed
+
+            def _prediction_scenarios(self, state, spec, rng):
+                scenarios = super()._prediction_scenarios(state, spec, rng)
+                self.captured_scenarios = scenarios
+                return scenarios
+
+        clean = CapturingPolicy()
+        noisy = CapturingPolicy(sensor_noise_sigma=0.15)
+        clean.decide(initial_state(spec), spec, np.random.default_rng(4401))
+        noisy.decide(initial_state(spec), spec, np.random.default_rng(4401))
+
+        for clean_scenario, noisy_scenario in zip(
+            clean.captured_scenarios, noisy.captured_scenarios, strict=True
+        ):
+            np.testing.assert_allclose(
+                clean_scenario.path_capacity_multiplier
+                / clean.captured_path_center,
+                noisy_scenario.path_capacity_multiplier
+                / noisy.captured_path_center,
+            )
+            np.testing.assert_allclose(
+                clean_scenario.exit_capacity_multiplier
+                / clean.captured_exit_center,
+                noisy_scenario.exit_capacity_multiplier
+                / noisy.captured_exit_center,
+            )
+            np.testing.assert_allclose(
+                clean_scenario.compliance, noisy_scenario.compliance
+            )
+
+    def test_decision_substreams_keep_scenarios_aligned_for_different_states(self) -> None:
+        small_control = replace(
+            self.spec.robust_control,
+            prediction_scenarios=3,
+            candidate_count=10,
+            rollout_steps=1,
+        )
+        spec = replace(self.spec, robust_control=small_control)
+
+        class CapturingPolicy(ConditionedMeanPolicy):
+            def _prediction_scenarios(self, state, spec, rng):
+                scenarios = super()._prediction_scenarios(state, spec, rng)
+                self.captured_scenarios = scenarios
+                return scenarios
+
+        state_a = initial_state(spec)
+        state_b = initial_state(spec)
+        state_b.path_queue[:] = np.arange(state_b.path_queue.size).reshape(
+            state_b.path_queue.shape
+        ) * 25.0
+        state_b.exit_queue[:] = np.array([300.0, 50.0, 600.0])
+        first = CapturingPolicy()
+        second = CapturingPolicy()
+        first.decide(state_a, spec, np.random.default_rng(9917))
+        second.decide(state_b, spec, np.random.default_rng(9917))
+        for left, right in zip(
+            first.captured_scenarios, second.captured_scenarios, strict=True
+        ):
+            np.testing.assert_allclose(
+                left.path_capacity_multiplier, right.path_capacity_multiplier
+            )
+            np.testing.assert_allclose(
+                left.exit_capacity_multiplier, right.exit_capacity_multiplier
+            )
+            np.testing.assert_allclose(left.compliance, right.compliance)
+
+    def test_full_matched_policies_are_identical_without_capacity_uncertainty(self) -> None:
+        small_control = replace(
+            self.spec.robust_control,
+            prediction_scenarios=2,
+            candidate_count=6,
+            rollout_steps=3,
+        )
+        zero_uncertainty = replace(
+            self.spec.uncertainty,
+            capacity_log_sigma=0.0,
+        )
+        spec = replace(
+            self.spec,
+            robust_control=small_control,
+            uncertainty=zero_uncertainty,
+        )
+        conditioned = run_simulation(spec, ConditionedMeanPolicy(), seed=8123)
+        unconditioned = run_simulation(spec, UnconditionedMeanPolicy(), seed=8123)
+        for field in (
+            "clearance_time_seconds",
+            "mean_clearance_time_seconds",
+            "peak_density_per_m2",
+            "recommendation_changes",
+            "capacity_mae",
+            "capacity_observed_fraction",
+        ):
+            self.assertAlmostEqual(
+                float(getattr(conditioned, field)),
+                float(getattr(unconditioned, field)),
+                places=10,
+            )
+
+    def test_primary_predictions_are_identical_at_nominal_center(self) -> None:
+        state = initial_state(self.spec)
+        conditioned = ConditionedMeanPolicy()._prediction_scenarios(
+            state, self.spec, np.random.default_rng(811)
+        )
+        unconditioned = UnconditionedMeanPolicy()._prediction_scenarios(
+            state, self.spec, np.random.default_rng(811)
+        )
+        for cond, uncond in zip(conditioned, unconditioned, strict=True):
+            np.testing.assert_allclose(
+                cond.path_capacity_multiplier,
+                uncond.path_capacity_multiplier,
+            )
+            np.testing.assert_allclose(
+                cond.exit_capacity_multiplier,
+                uncond.exit_capacity_multiplier,
+            )
+            np.testing.assert_allclose(cond.compliance, uncond.compliance)
+
+    def test_saturated_observation_counts_are_recorded(self) -> None:
+        state = initial_state(self.spec)
+        state.path_queue[:] = 1000.0
+        state.exit_queue[:] = 1000.0
+        scenario = nominal_scenario(self.spec)
+        advance_state(state, self.spec, self.spec.habitual_matrix, scenario)
+        self.assertTrue(np.all(state.path_saturated_observation_count == 1))
+        self.assertTrue(np.all(state.exit_saturated_observation_count == 1))
+
+    def test_time_step_refinement_preserves_physical_controller_scales(self) -> None:
+        base_decay = 1.0 - self.spec.robust_control.estimator_alpha
+        for dt in (10.0, 5.0, 2.5):
+            refined = spec_with_time_step(self.spec, dt)
+            self.assertAlmostEqual(
+                refined.control_interval_steps * dt, 120.0, places=10
+            )
+            self.assertAlmostEqual(
+                refined.robust_control.rollout_steps * dt, 300.0, places=10
+            )
+            refined_decay_over_base_step = (
+                1.0 - refined.robust_control.estimator_alpha
+            ) ** (self.spec.time_step_seconds / dt)
+            self.assertAlmostEqual(
+                refined_decay_over_base_step, base_decay, places=12
+            )
+
+    def test_topology_configurations_are_shape_valid(self) -> None:
+        for name in (
+            "topology_symmetric.json",
+            "topology_path_bottleneck.json",
+            "topology_exit_bottleneck.json",
+        ):
+            spec = load_spec(ROOT / "config" / name)
+            self.assertEqual(spec.path_capacity.shape, (spec.zone_count, spec.exit_count))
+            self.assertEqual(spec.exit_capacity.shape, (spec.exit_count,))
+            self.assertAlmostEqual(spec.total_population, 5000.0)
+
     def test_conditioning_only_changes_capacity_prediction_center(self) -> None:
         state = initial_state(self.spec)
-        state.path_capacity_estimate[:] = 0.55
-        state.exit_capacity_estimate[:] = 0.60
-        conditioned = ScenarioMeanPolicy(assumed_residual_sigma=0.0)
+        conditioned = ConditionedMeanPolicy()
         unconditioned = UnconditionedMeanPolicy()
         cond_scenarios = conditioned._prediction_scenarios(
             state, self.spec, np.random.default_rng(7)
@@ -121,11 +360,27 @@ class EgressModelTests(unittest.TestCase):
         uncond_scenarios = unconditioned._prediction_scenarios(
             state, self.spec, np.random.default_rng(7)
         )
-        np.testing.assert_allclose(cond_scenarios[0].path_capacity_multiplier, 0.55)
-        np.testing.assert_allclose(cond_scenarios[0].exit_capacity_multiplier, 0.60)
+        # At the nominal center the scenario arrays are identical, proving
+        # common-random-number alignment and an equal pre-clipping log-spread parameter.
+        for cond, uncond in zip(cond_scenarios, uncond_scenarios, strict=True):
+            np.testing.assert_allclose(
+                cond.path_capacity_multiplier,
+                uncond.path_capacity_multiplier,
+            )
+            np.testing.assert_allclose(
+                cond.exit_capacity_multiplier,
+                uncond.exit_capacity_multiplier,
+            )
+            np.testing.assert_allclose(cond.compliance, uncond.compliance)
+
+        state.path_capacity_estimate[:] = 0.80
+        state.exit_capacity_estimate[:] = 0.85
+        shifted = conditioned._prediction_scenarios(
+            state, self.spec, np.random.default_rng(7)
+        )
         self.assertFalse(
             np.allclose(
-                cond_scenarios[0].path_capacity_multiplier,
+                shifted[0].path_capacity_multiplier,
                 uncond_scenarios[0].path_capacity_multiplier,
             )
         )
@@ -138,6 +393,8 @@ class EgressModelTests(unittest.TestCase):
 
     def test_build_policy_includes_matched_information_variants(self) -> None:
         expected = {
+            "conditioned_mean_equal_spread": ConditionedMeanPolicy,
+            "conditioned_mean_contracted_spread": ContractedSpreadMeanPolicy,
             "unconditioned_mean_only": UnconditionedMeanPolicy,
             "scenario_mean_only": ScenarioMeanPolicy,
             "robust_without_sensor_conditioning": UnconditionedRobustPolicy,
@@ -152,6 +409,48 @@ class EgressModelTests(unittest.TestCase):
         self.assertTrue(result.completed)
         self.assertEqual(result.policy, "oracle_capacity_rolling_horizon")
         self.assertLess(result.mass_balance_error, 1e-7)
+
+    def test_oracle_capacity_scenarios_preserve_matched_compliance_draws(self) -> None:
+        state = initial_state(self.spec)
+        realized = nominal_scenario(self.spec)
+        realized.path_capacity_multiplier[:] = 0.80
+        realized.exit_capacity_multiplier[:] = 0.90
+
+        oracle = OracleCapacityMeanPolicy()
+        oracle.set_oracle_scenario(realized)
+        oracle_scenarios = oracle._prediction_scenarios(
+            state, self.spec, np.random.default_rng(771)
+        )
+
+        state.path_capacity_estimate[:] = 0.80
+        state.exit_capacity_estimate[:] = 0.90
+        conditioned = ConditionedMeanPolicy(assumed_residual_sigma=0.0)
+        conditioned_scenarios = conditioned._prediction_scenarios(
+            state, self.spec, np.random.default_rng(771)
+        )
+        unconditioned = UnconditionedMeanPolicy()._prediction_scenarios(
+            state, self.spec, np.random.default_rng(771)
+        )
+        for oracle_scenario, conditioned_scenario, unconditioned_scenario in zip(
+            oracle_scenarios,
+            conditioned_scenarios,
+            unconditioned,
+            strict=True,
+        ):
+            np.testing.assert_allclose(
+                oracle_scenario.path_capacity_multiplier,
+                conditioned_scenario.path_capacity_multiplier,
+            )
+            np.testing.assert_allclose(
+                oracle_scenario.exit_capacity_multiplier,
+                conditioned_scenario.exit_capacity_multiplier,
+            )
+            np.testing.assert_allclose(
+                oracle_scenario.compliance, conditioned_scenario.compliance
+            )
+            np.testing.assert_allclose(
+                oracle_scenario.compliance, unconditioned_scenario.compliance
+            )
 
     def test_oracle_capacity_mean_policy_runs_as_diagnostic(self) -> None:
         result = run_simulation(self.spec, OracleCapacityMeanPolicy(), seed=32)
@@ -267,8 +566,25 @@ class EgressModelTests(unittest.TestCase):
         scenario.path_capacity_multiplier[:] = 0.5
         scenario.exit_capacity_multiplier[:] = 0.6
         advance_state(state, self.spec, self.spec.habitual_matrix, scenario)
-        self.assertTrue(np.all(state.path_capacity_estimate < 1.0))
-        self.assertTrue(np.all(state.exit_capacity_estimate < 1.0))
+        expected_path = 0.7 * 1.0 + 0.3 * 0.5
+        expected_exit = 0.7 * 1.0 + 0.3 * 0.6
+        np.testing.assert_allclose(state.path_capacity_estimate, expected_path)
+        np.testing.assert_allclose(state.exit_capacity_estimate, expected_exit)
+        self.assertTrue(np.all(state.path_saturated_observation_count == 1))
+        self.assertTrue(np.all(state.exit_saturated_observation_count == 1))
+
+    def test_all_topology_configs_load(self) -> None:
+        for config_name in (
+            "default.json",
+            "topology_symmetric.json",
+            "topology_path_bottleneck.json",
+            "topology_exit_bottleneck.json",
+            "topology_expanded_venue.json",
+        ):
+            spec = load_spec(ROOT / "config" / config_name)
+            self.assertGreaterEqual(spec.zone_count, 4)
+            self.assertGreaterEqual(spec.exit_count, 3)
+            self.assertAlmostEqual(spec.total_population, 5000.0)
 
 
 if __name__ == "__main__":

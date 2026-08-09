@@ -14,9 +14,10 @@ from egress_sim.analysis import (
     run_policy_variants,
 )
 from egress_sim.config import load_spec
+from egress_sim.figure_protocol import REFERENCE_PROTOCOL
 
 
-FINAL_SEED_START = 90_000
+FINAL_SEED_START = REFERENCE_PROTOCOL.validation_seed_start
 
 
 def run(seed_count: int = 200, workers: int = DEFAULT_WORKERS) -> None:
@@ -27,14 +28,17 @@ def run(seed_count: int = 200, workers: int = DEFAULT_WORKERS) -> None:
         PolicyVariant("static_nearest", "static_nearest", {}),
         PolicyVariant("deterministic_load_balance", "deterministic_load_balance", {}),
         PolicyVariant("unconditioned_mean_only", "unconditioned_mean_only", {}),
-        PolicyVariant("scenario_mean_only", "scenario_mean_only", {}),
-        PolicyVariant("oracle_capacity_mean_only", "oracle_capacity_mean_only", {}),
         PolicyVariant(
-            "robust_without_sensor_conditioning",
-            "unconditioned_mean_cvar",
+            "conditioned_mean_equal_spread",
+            "conditioned_mean_equal_spread",
             {},
         ),
-        PolicyVariant("robust_rolling_horizon", "conditioned_mean_cvar", {}),
+        PolicyVariant(
+            "conditioned_mean_contracted_spread",
+            "conditioned_mean_shrunk_spread",
+            {},
+        ),
+        PolicyVariant("oracle_capacity_mean_only", "oracle_capacity_mean_only", {}),
     )
     raw = run_policy_variants(spec, seeds, variants, workers=workers)
     raw.to_csv(tables / "information_value_validation_runs.csv", index=False)
@@ -50,32 +54,22 @@ def run(seed_count: int = 200, workers: int = DEFAULT_WORKERS) -> None:
             "planning-vs-reactive",
         ),
         (
-            "scenario_mean_only",
+            "conditioned_mean_equal_spread",
             "unconditioned_mean_only",
             "primary-sensing-value",
         ),
         (
+            "conditioned_mean_shrunk_spread",
+            "conditioned_mean_equal_spread",
+            "spread-contraction-diagnostic",
+        ),
+        (
             "oracle_capacity_mean_only",
-            "scenario_mean_only",
+            "conditioned_mean_equal_spread",
             "oracle-residual-information",
         ),
         (
-            "unconditioned_mean_cvar",
-            "unconditioned_mean_only",
-            "cvar-without-conditioning",
-        ),
-        (
-            "conditioned_mean_cvar",
-            "scenario_mean_only",
-            "cvar-with-conditioning",
-        ),
-        (
-            "conditioned_mean_cvar",
-            "unconditioned_mean_cvar",
-            "sensing-value-with-cvar",
-        ),
-        (
-            "scenario_mean_only",
+            "conditioned_mean_equal_spread",
             "deterministic_load_balance",
             "secondary-system-comparison",
         ),

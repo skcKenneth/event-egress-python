@@ -24,7 +24,7 @@ def run(seed_count: int = 200, workers: int = 4) -> None:
             {},
             (
                 PolicyVariant("deterministic_load_balance", "deterministic_load_balance", {}),
-                PolicyVariant("scenario_mean_only", "scenario_mean_only", {}),
+                PolicyVariant("conditioned_mean_equal_spread", "conditioned_mean_equal_spread", {}),
                 PolicyVariant("robust_rolling_horizon", "robust_rolling_horizon", {}),
             ),
         ),
@@ -35,7 +35,7 @@ def run(seed_count: int = 200, workers: int = 4) -> None:
             {},
             (
                 PolicyVariant("deterministic_load_balance", "deterministic_load_balance", {}),
-                PolicyVariant("scenario_mean_only", "scenario_mean_only", {}),
+                PolicyVariant("conditioned_mean_equal_spread", "conditioned_mean_equal_spread", {}),
                 PolicyVariant("robust_rolling_horizon", "robust_rolling_horizon", {}),
             ),
         ),
@@ -78,7 +78,7 @@ def run(seed_count: int = 200, workers: int = 4) -> None:
                 if condition == "temporary_primary_exit_capacity_55pct"
                 else (
                     ("robust_rolling_horizon", "deterministic_load_balance"),
-                    ("robust_rolling_horizon", "scenario_mean_only"),
+                    ("robust_rolling_horizon", "conditioned_mean_equal_spread"),
                 )
             )
         )

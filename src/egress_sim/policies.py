@@ -12,7 +12,11 @@ from .model import (
     current_peak_density,
     normalize_recommendation,
 )
-from .uncertainty import sample_conditioned_scenario, sample_scenario
+from .uncertainty import (
+    sample_centered_scenario,
+    sample_conditioned_scenario,
+    sample_scenario,
+)
 
 
 def _softmax_rows(scores: np.ndarray, temperature: float = 1.0) -> np.ndarray:
@@ -20,6 +24,27 @@ def _softmax_rows(scores: np.ndarray, temperature: float = 1.0) -> np.ndarray:
     scaled -= np.max(scaled, axis=1, keepdims=True)
     weights = np.exp(scaled)
     return weights / weights.sum(axis=1, keepdims=True)
+
+
+def _decision_substreams(
+    rng: np.random.Generator,
+) -> tuple[np.random.Generator, np.random.Generator, np.random.Generator]:
+    """Create observation, candidate, and scenario RNGs for one update.
+
+    The parent generator consumes exactly three integers per control update.
+    Consequently, matched policies with the same policy seed receive identical
+    scenario substream seeds even after their state-dependent candidate
+    generators begin consuming different numbers of variates.
+    """
+
+    seeds = rng.integers(
+        0,
+        np.iinfo(np.int64).max,
+        size=3,
+        dtype=np.int64,
+    )
+    generators = tuple(np.random.default_rng(int(seed)) for seed in seeds)
+    return generators[0], generators[1], generators[2]
 
 
 class StaticNearestPolicy:
@@ -217,45 +242,226 @@ class RobustRollingHorizonPolicy:
             + spec.robust_control.density_weight * excess_density**2
         )
 
+    def _batched_scenario_costs(
+        self,
+        state: EgressState,
+        spec: EgressSpec,
+        candidates: list[np.ndarray],
+        scenarios: list[Scenario],
+    ) -> np.ndarray:
+        """Evaluate all candidate-scenario rollouts in one vectorized batch.
+
+        The scalar :meth:`_scenario_cost` remains the reference implementation
+        used by validation tests and surrogate diagnostics. Capacity-estimate
+        updates inside a rollout are omitted because the recommendation is
+        frozen and those estimates are never read during the rollout.
+        """
+
+        recommendations = np.asarray(candidates, dtype=float)
+        scenario_path = np.asarray(
+            [scenario.path_capacity_multiplier for scenario in scenarios],
+            dtype=float,
+        )
+        scenario_exit = np.asarray(
+            [scenario.exit_capacity_multiplier for scenario in scenarios],
+            dtype=float,
+        )
+        compliance = np.asarray(
+            [scenario.compliance for scenario in scenarios],
+            dtype=float,
+        )
+        candidate_count = recommendations.shape[0]
+        scenario_count = scenario_path.shape[0]
+        controller_spec = replace(
+            spec,
+            free_flow_time=self._controller_travel_time(spec),
+        )
+        z_count = spec.zone_count
+        e_count = spec.exit_count
+        max_delay = state.transit.shape[2]
+        batch_shape = (candidate_count, scenario_count)
+
+        remaining = np.broadcast_to(
+            state.remaining,
+            (*batch_shape, z_count),
+        ).copy()
+        path_queue = np.broadcast_to(
+            state.path_queue,
+            (*batch_shape, z_count, e_count),
+        ).copy()
+        transit = np.broadcast_to(
+            state.transit,
+            (*batch_shape, z_count, e_count, max_delay),
+        ).copy()
+        exit_queue = np.broadcast_to(
+            state.exit_queue,
+            (*batch_shape, e_count),
+        ).copy()
+        person_seconds = np.full(batch_shape, state.person_seconds, dtype=float)
+        elapsed_seconds = np.full(batch_shape, state.elapsed_seconds, dtype=float)
+
+        current_path_density = np.divide(
+            state.path_queue,
+            spec.path_queue_area,
+            out=np.zeros_like(state.path_queue),
+            where=spec.path_queue_area > 0,
+        )
+        current_exit_density = np.divide(
+            state.exit_queue,
+            spec.exit_queue_area,
+            out=np.zeros_like(state.exit_queue),
+            where=spec.exit_queue_area > 0,
+        )
+        initial_peak = float(
+            max(np.max(current_path_density), np.max(current_exit_density))
+        )
+        peak_density = np.full(batch_shape, initial_peak, dtype=float)
+
+        actual_choice = (
+            compliance[None, :, :, None] * recommendations[:, None, :, :]
+            + (1.0 - compliance[None, :, :, None])
+            * spec.habitual_matrix[None, None, :, :]
+        )
+        path_capacity = controller_spec.path_capacity[None, :, :] * scenario_path
+        exit_capacity = controller_spec.exit_capacity[None, :] * scenario_exit
+        dt = spec.time_step_seconds
+        release_per_step = spec.zone_release_rate * dt
+
+        for _ in range(spec.robust_control.rollout_steps):
+            active = (
+                np.sum(remaining, axis=-1)
+                + np.sum(path_queue, axis=(-2, -1))
+                + np.sum(transit, axis=(-3, -2, -1))
+                + np.sum(exit_queue, axis=-1)
+            )
+            alive = active > 1e-8
+            if not np.any(alive):
+                break
+            person_seconds += active * dt * alive
+            elapsed_seconds += dt * alive
+
+            arrivals = transit[..., 0].copy()
+            transit[..., :-1] = transit[..., 1:]
+            transit[..., -1] = 0.0
+            exit_queue += np.sum(arrivals, axis=-2)
+
+            released = np.minimum(remaining, release_per_step)
+            remaining -= released
+            path_queue += released[..., None] * actual_choice
+
+            path_outflow = np.minimum(
+                path_queue,
+                path_capacity[None, :, :, :] * dt,
+            )
+            path_queue -= path_outflow
+            for zone in range(z_count):
+                for exit_index in range(e_count):
+                    delay_index = int(
+                        controller_spec.delay_steps[zone, exit_index]
+                    ) - 1
+                    transit[:, :, zone, exit_index, delay_index] += path_outflow[
+                        :, :, zone, exit_index
+                    ]
+
+            exit_outflow = np.minimum(
+                exit_queue,
+                exit_capacity[None, :, :] * dt,
+            )
+            exit_queue -= exit_outflow
+
+            path_density = path_queue / spec.path_queue_area[None, None, :, :]
+            exit_density = exit_queue / spec.exit_queue_area[None, None, :]
+            peak_density = np.maximum(
+                peak_density,
+                np.maximum(
+                    np.max(path_density, axis=(-2, -1)),
+                    np.max(exit_density, axis=-1),
+                ),
+            )
+
+        simulated_seconds = elapsed_seconds - state.elapsed_seconds
+        future_path_work = path_queue + remaining[..., None] * actual_choice
+        path_stage_seconds = np.max(
+            future_path_work
+            / np.maximum(path_capacity[None, :, :, :], 1e-9),
+            axis=(-2, -1),
+        )
+        exit_work = (
+            exit_queue
+            + np.sum(transit, axis=(2, 4))
+            + np.sum(future_path_work, axis=2)
+        )
+        exit_stage_seconds = np.max(
+            exit_work / np.maximum(exit_capacity[None, :, :], 1e-9),
+            axis=-1,
+        )
+        occupied_paths = future_path_work > 1e-8
+        free_flow_seconds = np.max(
+            np.where(
+                occupied_paths,
+                controller_spec.free_flow_time[None, None, :, :],
+                0.0,
+            ),
+            axis=(-2, -1),
+        )
+        estimated_clearance_minutes = (
+            simulated_seconds
+            + path_stage_seconds
+            + exit_stage_seconds
+            + free_flow_seconds
+        ) / 60.0
+        start_people = max(state.active_population, 1.0)
+        mean_delay_minutes = (
+            person_seconds - state.person_seconds
+        ) / start_people / 60.0
+        excess_density = np.maximum(
+            0.0,
+            peak_density - spec.robust_control.safe_density_per_m2,
+        )
+        return (
+            estimated_clearance_minutes
+            + spec.robust_control.mean_delay_weight * mean_delay_minutes
+            + spec.robust_control.density_weight * excess_density**2
+        )
+
     def decide(
         self, state: EgressState, spec: EgressSpec, rng: np.random.Generator
     ) -> np.ndarray:
-        decision_state = self._decision_state(state, spec, rng)
-        candidates = self._candidate_recommendations(decision_state, spec, rng)
-        scenarios = self._prediction_scenarios(decision_state, spec, rng)
+        observation_rng, candidate_rng, scenario_rng = _decision_substreams(rng)
+        decision_state = self._decision_state(state, spec, observation_rng)
+        candidates = self._candidate_recommendations(
+            decision_state, spec, candidate_rng
+        )
+        scenarios = self._prediction_scenarios(
+            decision_state, spec, scenario_rng
+        )
+        costs = self._batched_scenario_costs(state, spec, candidates, scenarios)
         alpha = spec.robust_control.cvar_alpha
         tail_count = max(1, int(np.ceil((1.0 - alpha) * len(scenarios))))
-        best_objective = float("inf")
-        best = candidates[0]
-        best_mean = float("nan")
-        best_cvar = float("nan")
-        for candidate in candidates:
-            costs = np.asarray(
-                [self._scenario_cost(state, spec, candidate, scenario) for scenario in scenarios]
-            )
-            mean_cost = float(np.mean(costs))
-            cvar_cost = float(np.mean(np.sort(costs)[-tail_count:]))
-            switch_cost = spec.robust_control.switch_weight * float(
-                np.mean(np.abs(candidate - decision_state.last_recommendation))
-            )
-            risk_weight = (
-                spec.robust_control.risk_weight
-                if self.risk_weight_override is None
-                else self.risk_weight_override
-            )
-            objective = mean_cost + risk_weight * cvar_cost + switch_cost
-            if objective < best_objective:
-                best_objective = objective
-                best = candidate
-                best_mean = mean_cost
-                best_cvar = cvar_cost
+        mean_cost = np.mean(costs, axis=1)
+        cvar_cost = np.mean(np.sort(costs, axis=1)[:, -tail_count:], axis=1)
+        candidate_array = np.asarray(candidates, dtype=float)
+        switch_cost = spec.robust_control.switch_weight * np.mean(
+            np.abs(
+                candidate_array
+                - decision_state.last_recommendation[None, :, :]
+            ),
+            axis=(1, 2),
+        )
+        risk_weight = (
+            spec.robust_control.risk_weight
+            if self.risk_weight_override is None
+            else self.risk_weight_override
+        )
+        objective = mean_cost + risk_weight * cvar_cost + switch_cost
+        best_index = int(np.argmin(objective))
         self.last_diagnostics = RobustPolicyDiagnostics(
-            objective=best_objective,
-            mean_cost=best_mean,
-            cvar_cost=best_cvar,
+            objective=float(objective[best_index]),
+            mean_cost=float(mean_cost[best_index]),
+            cvar_cost=float(cvar_cost[best_index]),
             candidate_count=len(candidates),
         )
-        return best.copy()
+        return candidates[best_index].copy()
 
     def _prediction_scenarios(
         self, state: EgressState, spec: EgressSpec, rng: np.random.Generator
@@ -315,17 +521,13 @@ class OracleCapacityPolicy(RobustRollingHorizonPolicy):
         del state
         if self._oracle_scenario is None:
             raise RuntimeError("oracle scenario must be attached before simulation")
-        uncertainty = spec.uncertainty
-        alpha = max(uncertainty.compliance_mean * uncertainty.compliance_concentration, 1e-6)
-        beta = max(
-            (1.0 - uncertainty.compliance_mean) * uncertainty.compliance_concentration,
-            1e-6,
-        )
         return [
-            Scenario(
-                self._oracle_scenario.path_capacity_multiplier.copy(),
-                self._oracle_scenario.exit_capacity_multiplier.copy(),
-                np.clip(rng.beta(alpha, beta, spec.zone_count), 0.02, 0.98),
+            sample_centered_scenario(
+                spec,
+                rng,
+                self._oracle_scenario.path_capacity_multiplier,
+                self._oracle_scenario.exit_capacity_multiplier,
+                capacity_log_sigma=0.0,
             )
             for _ in range(spec.robust_control.prediction_scenarios)
         ]
@@ -338,11 +540,56 @@ class OracleCapacityMeanPolicy(OracleCapacityPolicy):
         super().__init__(risk_weight_override=0.0, **kwargs)
 
 
-class ScenarioMeanPolicy(RobustRollingHorizonPolicy):
-    name = "scenario_mean_only"
+class ConditionedMeanPolicy(RobustRollingHorizonPolicy):
+    """Mean-only controller centered on online capacity estimates.
+
+    The default pre-clipping prediction log-standard deviation is the same
+    environmental value used by :class:`UnconditionedMeanPolicy`, so the
+    implemented primary treatment changes only the capacity-scenario center
+    parameter under the same clipping rule and aligned scenario substreams.
+    """
+
+    name = "conditioned_mean_equal_spread"
 
     def __init__(self, **kwargs) -> None:
         super().__init__(risk_weight_override=0.0, **kwargs)
+
+
+class ScenarioMeanPolicy(ConditionedMeanPolicy):
+    """Backward-compatible alias for the conditioned mean controller."""
+
+    name = "scenario_mean_only"
+
+
+class ContractedSpreadMeanPolicy(RobustRollingHorizonPolicy):
+    """Secondary diagnostic using the legacy contracted prediction spread.
+
+    The primary paper comparison uses :class:`ConditionedMeanPolicy`, whose
+    scenario log-standard deviation matches the unconditioned prior.  This
+    class retains ``max(0.05, 0.45 * sigma)`` only to estimate the separate
+    contribution of narrowing the scenario distribution.
+    """
+
+    name = "conditioned_mean_contracted_spread"
+
+    def __init__(self, **kwargs) -> None:
+        super().__init__(risk_weight_override=0.0, **kwargs)
+
+    def _prediction_scenarios(
+        self, state: EgressState, spec: EgressSpec, rng: np.random.Generator
+    ) -> list:
+        residual_sigma = max(0.05, 0.45 * spec.uncertainty.capacity_log_sigma)
+        return [
+            sample_conditioned_scenario(
+                spec,
+                rng,
+                state.path_capacity_estimate,
+                state.exit_capacity_estimate,
+                residual_sigma=residual_sigma,
+                compliance_mean=self.assumed_compliance_mean,
+            )
+            for _ in range(spec.robust_control.prediction_scenarios)
+        ]
 
 
 class ChangeTriggeredFallbackPolicy(RobustRollingHorizonPolicy):
@@ -412,8 +659,12 @@ def build_policy(kind: str, *, name: str | None = None, **kwargs):
         policy = StaticNearestPolicy()
     elif kind == "deterministic_load_balance":
         policy = DeterministicLoadBalancePolicy()
+    elif kind == "conditioned_mean_equal_spread":
+        policy = ConditionedMeanPolicy(**kwargs)
     elif kind == "scenario_mean_only":
         policy = ScenarioMeanPolicy(**kwargs)
+    elif kind == "conditioned_mean_contracted_spread":
+        policy = ContractedSpreadMeanPolicy(**kwargs)
     elif kind == "unconditioned_mean_only":
         policy = UnconditionedMeanPolicy(**kwargs)
     elif kind == "robust_without_sensor_conditioning":
@@ -441,6 +692,8 @@ POLICIES = {
     UnconditionedMeanPolicy.name: UnconditionedMeanPolicy,
     OracleCapacityPolicy.name: OracleCapacityPolicy,
     OracleCapacityMeanPolicy.name: OracleCapacityMeanPolicy,
+    ConditionedMeanPolicy.name: ConditionedMeanPolicy,
     ScenarioMeanPolicy.name: ScenarioMeanPolicy,
+    ContractedSpreadMeanPolicy.name: ContractedSpreadMeanPolicy,
     ChangeTriggeredFallbackPolicy.name: ChangeTriggeredFallbackPolicy,
 }

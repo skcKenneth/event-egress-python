@@ -1,17 +1,22 @@
 from __future__ import annotations
 
-from pathlib import Path
 import sys
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SRC = ROOT / "src"
-if str(SRC) not in sys.path:
-    sys.path.insert(0, str(SRC))
+sys.path.insert(0, str(ROOT / "src"))
 
-from egress_sim.figure_protocol import validate_reference_figure_inputs
+from egress_sim.figure_protocol import validate_frozen_artifact_bundle
+
+
+def main() -> None:
+    artifacts = ROOT / "paper_artifacts"
+    validate_frozen_artifact_bundle(artifacts)
+    print(
+        "Frozen paper tables, figures, summaries, and SHA-256 manifests passed "
+        f"validation: {artifacts}"
+    )
 
 
 if __name__ == "__main__":
-    tables = ROOT / "outputs" / "tables"
-    validate_reference_figure_inputs(tables)
-    print("IEEE figure inputs match the frozen reference protocol and values.")
+    main()

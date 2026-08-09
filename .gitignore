@@ -7,6 +7,12 @@ htmlcov/
 build/
 dist/
 *.egg-info/
+*.aux
+*.bbl
+*.blg
+*.fls
+*.fdb_latexmk
+*.log
 outputs/tables/*
 !outputs/tables/.gitkeep
 outputs/figures/*

@@ -33,6 +33,8 @@ class EgressState:
     exit_capacity_estimate: np.ndarray
     path_capacity_estimate_history: np.ndarray
     exit_capacity_estimate_history: np.ndarray
+    path_saturated_observation_count: np.ndarray
+    exit_saturated_observation_count: np.ndarray
 
     def clone(self) -> "EgressState":
         return EgressState(
@@ -50,6 +52,8 @@ class EgressState:
             exit_capacity_estimate=self.exit_capacity_estimate.copy(),
             path_capacity_estimate_history=self.path_capacity_estimate_history.copy(),
             exit_capacity_estimate_history=self.exit_capacity_estimate_history.copy(),
+            path_saturated_observation_count=self.path_saturated_observation_count.copy(),
+            exit_saturated_observation_count=self.exit_saturated_observation_count.copy(),
         )
 
     @property
@@ -83,6 +87,8 @@ def initial_state(spec: EgressSpec) -> EgressState:
         exit_capacity_estimate_history=np.ones(
             (ESTIMATE_HISTORY_STEPS, *spec.exit_capacity.shape), dtype=float
         ),
+        path_saturated_observation_count=np.zeros_like(spec.path_capacity, dtype=int),
+        exit_saturated_observation_count=np.zeros_like(spec.exit_capacity, dtype=int),
     )
 
 
@@ -118,7 +124,7 @@ def advance_state(
     spec: EgressSpec,
     recommendation: np.ndarray,
     scenario: Scenario,
-) -> dict[str, float]:
+) -> dict[str, object]:
     recommendation = normalize_recommendation(recommendation, spec)
     dt = spec.time_step_seconds
     active_before = state.active_population
@@ -148,6 +154,7 @@ def advance_state(
         out=state.path_capacity_estimate.copy(),
         where=spec.path_capacity > 0,
     )
+    state.path_saturated_observation_count[path_saturated] += 1
     state.path_capacity_estimate[path_saturated] = (
         (1.0 - spec.robust_control.estimator_alpha)
         * state.path_capacity_estimate[path_saturated]
@@ -170,6 +177,7 @@ def advance_state(
         out=state.exit_capacity_estimate.copy(),
         where=spec.exit_capacity > 0,
     )
+    state.exit_saturated_observation_count[exit_saturated] += 1
     state.exit_capacity_estimate[exit_saturated] = (
         (1.0 - spec.robust_control.estimator_alpha)
         * state.exit_capacity_estimate[exit_saturated]
@@ -195,4 +203,8 @@ def advance_state(
         "active_population": state.active_population,
         "density": current_peak_density(state, spec),
         "mass_balance": state.active_population + state.cleared,
+        "path_saturated": path_saturated.copy(),
+        "exit_saturated": exit_saturated.copy(),
+        "path_saturation_fraction": float(np.mean(path_saturated)),
+        "exit_saturation_fraction": float(np.mean(exit_saturated)),
     }

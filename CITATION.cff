@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "Please cite the accompanying paper and this software release."
+title: "Event Egress: Matched Value-of-Information Benchmark"
+type: software
+authors:
+  - family-names: Cheng
+    given-names: Kenneth
+version: 0.2.0
+date-released: 2026-08-07
+repository-code: "https://github.com/skcKenneth/event-egress-python"
+preferred-citation:
+  type: conference-paper
+  title: "When Does Online Estimation of Persistent Capacity Improve Dynamic Crowd Guidance? A Mesoscopic Queue-Network Study"
+  authors:
+    - family-names: Cheng
+      given-names: Kenneth
+  year: 2026

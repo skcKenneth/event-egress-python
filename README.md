@@ -1,32 +1,62 @@
-# Event Egress Simulator
+# Event Egress: Matched Value-of-Information Benchmark
 
-A Python project for simulating event egress on a mesoscopic queue network and evaluating dynamic route-guidance policies under uncertain capacity and partial compliance.
+This repository contains the mesoscopic queue-network simulator and frozen experiment suite for:
 
-## Features
+> **When Does Online Estimation of Persistent Capacity Improve Dynamic Crowd Guidance? A Mesoscopic Queue-Network Study**
+
+The research question is deliberately narrow: does online estimation of persistent but initially unknown path and exit capacities improve rolling-horizon guidance **beyond** reactivity and predictive lookahead?
+
+The revised primary experiment is a center-only controller ablation. The conditioned and unconditioned mean controllers use the same state representation, candidate-construction rule, prediction horizon, scenario count, compliance model, objective, clipping rule, and policy-seed schedule. At each control update, independent observation, candidate, and scenario RNG substreams are derived from the same policy seed. The scenario substreams therefore remain aligned even after the policies induce different states or consume observation noise. Within the capacity-scenario model, the intervention is the prediction center: unit nominal capacity for the unconditioned controller versus the current throughput estimate for the conditioned controller. Both use the same pre-clipping capacity log-spread.
+
+## Frozen headline result
+
+<!-- HEADLINE_RESULTS_START -->
+On the post-revision confirmatory range **100000-100199**, the equal-spread
+conditioned mean controller averaged **705.80 s** versus **721.45 s** for the
+unconditioned mean controller. The paired effect was **-15.65 s** (**-2.17%**;
+95% paired-bootstrap interval **[-20.8, -10.8] s**). Exact policy means,
+run-level results, tail metrics, and diagnostics are in
+`paper_artifacts/RESULTS_SUMMARY.md` and `paper_artifacts/tables/`.
+`CONFIRMATORY_PROTOCOL.md` records the protocol frozen before this range was
+inspected.
+<!-- HEADLINE_RESULTS_END -->
+
+## Scope and safety boundary
+
+This is a synthetic computational benchmark, not an operational evacuation system. It does not model continuous pedestrian interaction, collision avoidance, pressure, injury risk, fire or smoke propagation, venue-specific geometry, or regulatory decision making. The queue-density output is a model proxy and must not be interpreted as a safety certification.
+
+## Main capabilities
 
 - discrete-time conservation-based queue network;
 - source release, path queues, travel-delay cells, and exit queues;
 - persistent stochastic path and exit capacities;
 - partial compliance with route recommendations;
-- static, reactive, scenario-mean, conditioned, CVaR, oracle, and fallback policies;
-- paired-seed experiment runners and bootstrap summaries;
-- CSV result export and generic Matplotlib figures;
-- unit tests for conservation, normalization, policy behavior, and output statistics.
+- static, reactive, unconditioned, throughput-conditioned, oracle, CVaR, and fallback policies;
+- paired-seed experiments and paired bootstrap intervals;
+- vectorized candidate-scenario rollouts, tested numerically against the scalar reference implementation;
+- direct capacity-estimator convergence and saturation-observability diagnostics;
+- uncertainty-compliance, time-step, topology-family, controller-facing capacity-estimate fault, and objective-sensitivity studies;
+- frozen CSV tables, vector figures, a SHA-256 artifact manifest, and unit tests.
 
-## Project layout
+## Repository layout
 
 ```text
-config/                 Model and controller configuration
-src/egress_sim/       Simulator, policies, uncertainty, analysis, plotting
-experiments/            Standalone experiment runners
-scripts/verify.py       Unit tests and a smoke simulation
-tests/                  Core model and output-statistics tests
-outputs/tables/         Generated CSV files
-outputs/figures/        Generated plots
-main.py                 Small command-line launcher
+config/                       Base and topology-family configurations
+src/egress_sim/               Simulator, policies, uncertainty, and analysis
+experiments/                  Reproducible experiment runners
+scripts/                      Verification and frozen-artifact checks
+tests/                        Model, statistics, and protocol tests
+paper_artifacts/tables/       Frozen CSV inputs used by the revised paper
+paper_artifacts/figures/      Frozen PDF/PNG figures used by the revised paper
+paper_artifacts/reference_manifest.json
+outputs/                      Regenerated or exploratory outputs (git-ignored)
+main.py                       Command-line entry point
+REPRODUCIBILITY.md            Exact protocol and seed documentation
 ```
 
 ## Installation
+
+Python 3.10 or later is required.
 
 ```bash
 python -m venv .venv
@@ -48,120 +78,93 @@ python -m pip install --upgrade pip
 python -m pip install -e .
 ```
 
-## Verify the project
+For the exact frozen-build dependency versions, use:
+
+```bash
+python -m pip install -r requirements-lock.txt
+```
+
+## Verify the implementation
 
 ```bash
 python main.py verify
 ```
 
-This runs the unit tests and one deterministic smoke simulation.
+This runs the unit tests and a deterministic smoke simulation. The tests cover mass conservation, non-negativity, recommendation normalization, matched candidate construction, center-only scenario coupling, RNG-substream alignment, separate environment and policy seeds, estimator updates, topology configuration validity, and output statistics.
 
-## Run a baseline experiment
+## Use the frozen paper artifacts
 
-```bash
-python main.py baseline --seeds 20 --workers 4
-```
-
-Equivalent direct command:
-
-```bash
-python experiments/run_baselines.py --seeds 20 --workers 4
-```
-
-## Run the complete experiment suite
-
-```bash
-python main.py full
-```
-
-The complete suite is computationally intensive. Individual runners in `experiments/` accept their own `--seeds` and `--workers` options.
-
-Examples:
-
-```bash
-python experiments/run_information_value_validation.py --seeds 200 --workers 8
-python experiments/run_time_step_sensitivity.py --seeds 50 --workers 4
-python experiments/run_sensor_ablation.py --seeds 30 --workers 4
-python experiments/run_runtime_benchmark.py
-```
-
-## Configuration
-
-The default network and controller settings are in `config/default.json`. The configuration specifies:
-
-- zone populations and release rates;
-- path and exit capacities;
-- free-flow travel times;
-- queue holding areas;
-- capacity uncertainty and compliance;
-- controller horizon, scenario count, candidate count, and objective weights.
-
-## Outputs
-
-Experiment runners create files under:
-
-```text
-outputs/tables/
-outputs/figures/
-```
-
-The project includes the frozen CSV tables used by the bundled IEEE figures. New experiment runs may overwrite tables with the same names, so validate the figure inputs before rendering.
-
-## IEEE-style figures
-
-The compact double-column figure set is generated entirely in Python. The renderer reads CSV result tables and writes both vector PDF and 600-dpi PNG files.
-
-The bundled tables follow one frozen protocol:
-
-- final validation: 200 seeds per policy, seeds 90000--90199;
-- information map: 50 paired seeds per cell, seeds 96000--96049;
-- time-step sensitivity: 50 seeds per step and policy;
-- residual-spread ablation: 50 paired seeds per cell;
-- clipped-lognormal diagnostic: 1,000,000 samples.
-
-Check the tables before rendering:
+Check the table protocol, CSV manifest, and complete frozen-bundle checksums:
 
 ```bash
 python main.py check-figures
 ```
 
-Render the figures from the validated bundled tables:
+Render the three IEEE-style figures from the frozen CSV files:
 
 ```bash
 python main.py figures
 ```
 
-Regenerate every required table with the frozen protocol and then render:
+The tracked artifacts are under `paper_artifacts/`. Exploratory runs write to `outputs/` and do not silently replace the frozen files.
+
+## Regenerate the complete paper protocol
 
 ```bash
-python main.py figure-pipeline --workers 8
+python main.py figure-pipeline --workers 4 --refresh-artifacts
 ```
 
-This produces:
+The frozen protocol uses:
+
+| Study | Paired seeds |
+|---|---:|
+| Confirmatory held-out primary validation | 200 per policy |
+| Uncertainty-compliance map | 50 per cell and policy |
+| Time-step robustness | 30 per step and policy |
+| Estimator diagnostics | 50 per regime |
+| Topology-family transfer | 50 per family and policy |
+| Capacity-estimate fault diagnostics | 30 per regime and policy |
+
+The pipeline regenerates all required tables, validates the seed structure, renders vector PDF and 600-dpi PNG figures, copies the successful results into `paper_artifacts/`, writes both the CSV manifest and complete-bundle checksums, and validates the copied artifacts byte-for-byte.
+
+## Individual studies
+
+```bash
+python main.py final-validation --seeds 200 --workers 4
+python main.py estimator --seeds 50 --workers 4
+python main.py topology --seeds 50 --workers 4
+python main.py sensor --seeds 30 --workers 4
+```
+
+The uncertainty-compliance map can also be checkpointed one environmental sigma at a time:
+
+```bash
+python experiments/run_information_regime_map.py --sigma 0.00 --seeds 50 --workers 4
+python experiments/run_information_regime_map.py --sigma 0.15 --seeds 50 --workers 4
+python experiments/run_information_regime_map.py --sigma 0.30 --seeds 50 --workers 4
+python experiments/run_information_regime_map.py --sigma 0.45 --seeds 50 --workers 4
+python experiments/run_information_regime_map.py --merge-checkpoints
+```
+
+Additional runners in `experiments/` cover residual-spread ablation, objective-weight sensitivity, model mismatch, nonstationary capacity stress, terminal-surrogate validation, and runtime measurement.
+
+## Primary design correction
+
+Earlier versions centered conditioned scenarios on online estimates while also narrowing their log-standard deviation. That conflated the value of the information center with a change in prediction dispersion. In this revision:
 
 ```text
-outputs/figures/ieee/fig1_system_overview.pdf
-outputs/figures/ieee/fig1_system_overview.png
-outputs/figures/ieee/fig2_performance_landscape.pdf
-outputs/figures/ieee/fig2_performance_landscape.png
-outputs/figures/ieee/fig3_context_validation.pdf
-outputs/figures/ieee/fig3_context_validation.png
+unconditioned: center = 1,       pre-clipping log-spread = sigma
+conditioned:   center = m_hat_t, pre-clipping log-spread = sigma
 ```
 
-Strict validation is enabled by default. It rejects quick or partial result tables instead of silently producing figures with different values. Exploratory tables can still be rendered explicitly to a separate directory:
+Both apply the same clipping interval and consume aligned scenario variates. Because clipping is nonlinear, changing the center can also change the post-clipping moments; the paper therefore states the intervention precisely as a change in the **pre-clipping scenario center** under a common spread and clipping rule. The legacy contracted spread, `max(0.05, 0.45 sigma)`, is retained only as the explicitly labeled secondary policy kind `conditioned_mean_contracted_spread`.
 
-```bash
-python experiments/render_ieee_figures.py \
-  --allow-nonreference \
-  --output outputs/figures/ieee-development
-```
+## Reproducibility notes
 
-The style module is `src/egress_sim/ieee_style.py`. It fixes the IEEE double-column width at 7.16 inches, uses compact serif typography and STIX mathematics, embeds TrueType fonts in PDF, and exports PNG at 600 dpi. The multi-panel layouts are defined in `experiments/render_ieee_figures.py`, and the protocol checks are in `src/egress_sim/figure_protocol.py`.
+See [REPRODUCIBILITY.md](REPRODUCIBILITY.md) for seed ranges, RNG coupling, file provenance, environment details, and interpretation of the estimator diagnostic. The frozen paper tables are the authoritative numerical source for the revised manuscript.
 
-### Automatic label safety padding
+## Citation and licence status
 
-The IEEE system-overview renderer measures the actual rendered label glyphs for
-Corridor A--C and enlarges each rounded rectangle when needed.  The current
-safety margin is 3.5% of the schematic panel width on each horizontal side, so
-font substitutions or future label edits do not touch the border.  Arrow end
-points are taken from the fitted rectangle geometry.
+Citation metadata are provided in `CITATION.cff`. No open-source license has been selected for this package; see `LICENSE_STATUS.md`. Scientific use should cite the accompanying paper and preserve the stated non-operational scope.
+
+Before a public or camera-ready release, confirm the complete author list in `CITATION.cff`, fill the manuscript author/affiliation block, and select an explicit software license if redistribution is intended.

@@ -187,17 +187,28 @@ def run_policy_suite(
 
 def aggregate_results(frame: pd.DataFrame, group_columns: list[str]) -> pd.DataFrame:
     grouped = frame.groupby(group_columns, as_index=False)
-    return grouped.agg(
-        runs=("seed", "count"),
-        completion_rate=("completed", "mean"),
-        clearance_mean_s=("clearance_time_seconds", "mean"),
-        clearance_std_s=("clearance_time_seconds", "std"),
-        clearance_p90_s=("clearance_time_seconds", lambda values: values.quantile(0.90)),
-        mean_person_time_s=("mean_clearance_time_seconds", "mean"),
-        peak_density_mean=("peak_density_per_m2", "mean"),
-        peak_density_max=("peak_density_per_m2", "max"),
-        mass_balance_error_max=("mass_balance_error", "max"),
-    )
+    aggregations: dict[str, tuple[str, object]] = {
+        "runs": ("seed", "count"),
+        "completion_rate": ("completed", "mean"),
+        "clearance_mean_s": ("clearance_time_seconds", "mean"),
+        "clearance_std_s": ("clearance_time_seconds", "std"),
+        "clearance_p90_s": (
+            "clearance_time_seconds",
+            lambda values: values.quantile(0.90),
+        ),
+        "mean_person_time_s": ("mean_clearance_time_seconds", "mean"),
+        "peak_density_mean": ("peak_density_per_m2", "mean"),
+        "peak_density_max": ("peak_density_per_m2", "max"),
+        "mass_balance_error_max": ("mass_balance_error", "max"),
+    }
+    if "capacity_mae" in frame.columns:
+        aggregations["capacity_mae_mean"] = ("capacity_mae", "mean")
+    if "capacity_observed_fraction" in frame.columns:
+        aggregations["capacity_observed_fraction_mean"] = (
+            "capacity_observed_fraction",
+            "mean",
+        )
+    return grouped.agg(**aggregations)
 
 
 def ensure_output_directories(root: Path) -> tuple[Path, Path]:

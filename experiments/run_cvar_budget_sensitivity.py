@@ -64,7 +64,7 @@ def run(seed_count: int = 20, workers: int = 4) -> None:
         mean_name = f"conditioned_mean_S{budget}"
         cvar_name = f"conditioned_cvar_S{budget}"
         variants = (
-            PolicyVariant("scenario_mean_only", mean_name, {}),
+            PolicyVariant("conditioned_mean_equal_spread", mean_name, {}),
             PolicyVariant("robust_rolling_horizon", cvar_name, {}),
         )
         for regime, sigma, compliance in REGIMES:

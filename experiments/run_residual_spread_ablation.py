@@ -17,12 +17,16 @@ from egress_sim.config import load_spec
 
 SEED_START = 94_000
 CAPACITY_SIGMAS = (0.0, 0.15, 0.22, 0.45)
-RESIDUAL_SIGMAS = (0.0, 0.05, 0.10, 0.20)
 POLICY_SEED_OFFSET = 1_000_003
 
 
-def residual_label(residual_sigma: float) -> str:
-    return f"sigma_r_{residual_sigma:.2f}".replace(".", "p")
+def residual_modes(environmental_sigma: float) -> tuple[tuple[str, float], ...]:
+    return (
+        ("zero", 0.0),
+        ("shrunk", max(0.05, 0.45 * environmental_sigma)),
+        ("matched", environmental_sigma),
+        ("overdispersed", max(0.05, 1.50 * environmental_sigma)),
+    )
 
 
 def run(seed_count: int = 50, workers: int = DEFAULT_WORKERS) -> None:
@@ -37,42 +41,44 @@ def run(seed_count: int = 50, workers: int = DEFAULT_WORKERS) -> None:
                     spec,
                     int(seed),
                     int(seed) + POLICY_SEED_OFFSET,
-                    PolicyVariant("unconditioned_mean_only", "unconditioned_mean_only", {}),
+                    PolicyVariant(
+                        "unconditioned_mean_only",
+                        "unconditioned_mean_only",
+                        {},
+                    ),
                     sigma,
                     None,
                     {},
                     {},
                 )
             )
-            for assumed_sigma in RESIDUAL_SIGMAS:
-                label = residual_label(assumed_sigma)
+            for mode, assumed_sigma in residual_modes(sigma):
                 tasks.append(
                     (
                         spec,
                         int(seed),
                         int(seed) + POLICY_SEED_OFFSET,
                         PolicyVariant(
-                            "scenario_mean_only",
-                            f"conditioned_mean_{label}",
+                            "conditioned_mean_equal_spread",
+                            f"conditioned_mean_{mode}",
                             {"assumed_residual_sigma": assumed_sigma},
                         ),
                         sigma,
                         None,
                         {},
-                        {"residual_mode": label, "residual_sigma": assumed_sigma},
+                        {"residual_mode": mode, "residual_sigma": assumed_sigma},
                     )
                 )
     raw = execute_policy_variant_tasks(tasks, workers=workers)
     effects = []
     for sigma in CAPACITY_SIGMAS:
         subset = raw.loc[raw["capacity_log_sigma"] == sigma]
-        for assumed_sigma in RESIDUAL_SIGMAS:
-            label = residual_label(assumed_sigma)
-            proposed = f"conditioned_mean_{label}"
+        for mode, assumed_sigma in residual_modes(sigma):
+            proposed = f"conditioned_mean_{mode}"
             effects.append(
                 {
                     "capacity_log_sigma": sigma,
-                    "residual_mode": label,
+                    "residual_mode": mode,
                     "residual_sigma": assumed_sigma,
                     "proposed_policy": proposed,
                     "baseline_policy": "unconditioned_mean_only",
@@ -80,7 +86,7 @@ def run(seed_count: int = 50, workers: int = DEFAULT_WORKERS) -> None:
                         subset,
                         proposed,
                         "unconditioned_mean_only",
-                        label=f"residual-{sigma}-{label}",
+                        label=f"residual-{sigma}-{mode}",
                     ),
                 }
             )

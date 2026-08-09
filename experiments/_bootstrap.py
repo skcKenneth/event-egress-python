@@ -12,6 +12,6 @@ SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
-# One worker per physical core; cap at 16 for high thread-count CPUs.
-DEFAULT_WORKERS = min(16, max(1, (os.cpu_count() or 8) // 2))
+# Leave one logical CPU for orchestration and cap large machines at eight workers.
+DEFAULT_WORKERS = min(8, max(1, (os.cpu_count() or 2) - 1))
 
