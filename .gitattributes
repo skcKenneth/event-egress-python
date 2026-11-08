@@ -1,0 +1,4 @@
+# Frozen artifacts have byte-level manifests; never rewrite their line endings.
+paper_artifacts/** -text
+revision_artifacts/** -text
+paper/frozen_tables/** -text

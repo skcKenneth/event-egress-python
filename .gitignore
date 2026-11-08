@@ -13,6 +13,9 @@ dist/
 *.fls
 *.fdb_latexmk
 *.log
+*.synctex.gz
+outputs/pic2026_revision/
+outputs/qa/
 outputs/tables/*
 !outputs/tables/.gitkeep
 outputs/figures/*
