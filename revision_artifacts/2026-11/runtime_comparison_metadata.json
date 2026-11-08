@@ -1,0 +1,65 @@
+{
+  "study": "PIC2026 matched three-policy decision runtime",
+  "created_utc": "2026-11-08T05:35:54.932531+00:00",
+  "git_head": "39720fca10f0fc2b059d75c4a9d39c5c130e3bf9",
+  "working_tree_dirty": true,
+  "script_sha256": "8668c795c4aa698d8d0b71e3781bc8929abf4ccd119ca293e8242dbd10062118",
+  "config_sha256": "87f507a4cfe7243ca2a8675fa7f3cbb98b9bcd5d8d0392dd038d34328c092151",
+  "environment_seeds": [
+    110000,
+    110001,
+    110002,
+    110003,
+    110004
+  ],
+  "policy_seeds": [
+    1110003,
+    1110004,
+    1110005,
+    1110006,
+    1110007
+  ],
+  "collector_policies": [
+    "unconditioned_mean_only",
+    "conditioned_mean_equal_spread"
+  ],
+  "benchmark_policies": [
+    "deterministic_load_balance",
+    "unconditioned_mean_only",
+    "conditioned_mean_equal_spread"
+  ],
+  "snapshot_times_seconds": [
+    120.0,
+    360.0,
+    600.0
+  ],
+  "eligible_snapshots": 30,
+  "skipped_snapshots": 0,
+  "warmups_per_snapshot_policy": 5,
+  "timed_repetitions_per_snapshot_policy": 30,
+  "timer": "time.perf_counter_ns",
+  "timed_region": "policy.decide only; excludes clones, construction and file I/O",
+  "reset": "full physical/estimator state, policy object/cache and pre-decision RNG on every call",
+  "execution": "serial single process, cyclic policy order",
+  "thread_environment": {
+    "OPENBLAS_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1",
+    "NUMEXPR_NUM_THREADS": "1",
+    "BLIS_NUM_THREADS": "1"
+  },
+  "numpy_preloaded_before_thread_configuration": false,
+  "python": "3.14.6 (tags/v3.14.6:c63aec6, Jun 10 2026, 10:26:10) [MSC v.1944 64 bit (AMD64)]",
+  "packages": {
+    "numpy": "2.5.3",
+    "pandas": "3.0.6",
+    "matplotlib": "3.11.2"
+  },
+  "platform": "Windows-11-10.0.26200-SP0",
+  "machine": "AMD64",
+  "processor": "AMD64 Family 26 Model 104 Stepping 0, AuthenticAMD",
+  "logical_cpu_count": 12,
+  "control_interval_seconds": 120.0,
+  "interpretation": "sampled decision latency on this machine; not a real-time deployment guarantee"
+}

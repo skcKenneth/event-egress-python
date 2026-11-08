@@ -1,0 +1,25 @@
+{
+  "seed_start": 110000,
+  "seed_end": 110029,
+  "policy_seed_offset": 1000003,
+  "policy_kinds": [
+    "unconditioned_mean_only",
+    "conditioned_mean_equal_spread"
+  ],
+  "snapshot_seconds": [
+    120.0,
+    360.0,
+    600.0
+  ],
+  "bootstrap_samples": 5000,
+  "bootstrap_seed": 20261108,
+  "workers": 1,
+  "source_head": "39720fca10f0fc2b059d75c4a9d39c5c130e3bf9",
+  "python": "3.14.6",
+  "numpy": "2.5.3",
+  "pandas": "3.0.6",
+  "eligible_snapshots": 180,
+  "ineligible_snapshots": 0,
+  "incomplete_branches": 0,
+  "interpretation": "same-state action diagnostics; not full-policy comparison"
+}

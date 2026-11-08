@@ -452,7 +452,7 @@ def figure2(tables: Path, out: Path) -> None:
     use_ieee_style()
     raw = pd.read_csv(tables / "information_value_validation_runs.csv")
     effects = pd.read_csv(tables / "information_value_validation_effects.csv")
-    fig = plt.figure(figsize=(IEEE_DOUBLE_COLUMN_IN, 3.08))
+    fig = plt.figure(figsize=(IEEE_DOUBLE_COLUMN_IN, 3.55))
     grid = fig.add_gridspec(
         2,
         3,
@@ -581,6 +581,7 @@ def figure2(tables: Path, out: Path) -> None:
     decomp_keys = [
         "planning-vs-reactive",
         "primary-sensing-value",
+        "secondary-system-comparison",
         "oracle-residual-information",
     ]
     decomp = effects.set_index("comparison").loc[decomp_keys].reset_index()
@@ -590,6 +591,7 @@ def figure2(tables: Path, out: Path) -> None:
         [
             "Uncond. mean\n- reactive",
             "Cond. mean\n- uncond.",
+            "Cond. mean\n- reactive",
             "Oracle mean\n- cond.",
         ],
     )
@@ -714,7 +716,7 @@ def figure3(tables: Path, out: Path) -> None:
     _plot_sensor_faults(ax_sensor, tables)
     panel_title(ax_dt, "a", "Time-step robustness")
     panel_title(ax_topology, "b", "Network-family transfer")
-    panel_title(ax_sensor, "c", "Observation faults")
+    panel_title(ax_sensor, "c", "Estimate faults")
     fig.subplots_adjust(left=0.07, right=0.985, top=0.87, bottom=0.22)
     save_ieee(fig, out / "fig3_context_validation")
 
