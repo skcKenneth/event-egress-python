@@ -17,9 +17,28 @@ unconditioned mean controller. The paired effect was **-15.65 s** (**-2.17%**;
 95% paired-bootstrap interval **[-20.8, -10.8] s**). Exact policy means,
 run-level results, tail metrics, and diagnostics are in
 `paper_artifacts/RESULTS_SUMMARY.md` and `paper_artifacts/tables/`.
-`CONFIRMATORY_PROTOCOL.md` records the protocol frozen before this range was
-inspected.
+`CONFIRMATORY_PROTOCOL.md` retrospectively describes the tracked protocol;
+no original preregistration record was supplied in this repository.
 <!-- HEADLINE_RESULTS_END -->
+
+## November 2026 targeted revision
+
+The revision preserves the original frozen study and separately adds matched-state
+action diagnostics and a three-policy runtime comparison. See
+[the new diagnostic protocol](docs/pic2026_revision/DIAGNOSTIC_PROTOCOL.md) and
+[REPRODUCIBILITY.md](REPRODUCIBILITY.md).
+
+```bash
+python main.py decision-diagnostics
+python main.py runtime-comparison
+python main.py revision-artifacts
+python main.py check-revision
+```
+
+Run the diagnostic and timing jobs sequentially. New reviewed data are under
+`revision_artifacts/2026-11/`; manuscript and response sources are under `paper/`.
+The direct frozen conditioned-minus-reactive effect is **-3.00 s**
+(**95% CI [-7.50, +1.35] s**), so the default system-level advantage is unresolved.
 
 ## Scope and safety boundary
 
@@ -167,4 +186,4 @@ See [REPRODUCIBILITY.md](REPRODUCIBILITY.md) for seed ranges, RNG coupling, file
 
 Citation metadata are provided in `CITATION.cff`. No open-source license has been selected for this package; see `LICENSE_STATUS.md`. Scientific use should cite the accompanying paper and preserve the stated non-operational scope.
 
-Before a public or camera-ready release, confirm the complete author list in `CITATION.cff`, fill the manuscript author/affiliation block, and select an explicit software license if redistribution is intended.
+The manuscript author block and preferred paper citation in `CITATION.cff` use the four-author information supplied on November 8, 2026. Before a camera-ready release, authors must review the manuscript and current conference instructions. Software contributor metadata retain their existing attribution; select an explicit software license if redistribution is intended.

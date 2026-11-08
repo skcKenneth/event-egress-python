@@ -88,6 +88,23 @@ class RobustPolicyDiagnostics:
     candidate_count: int = 0
 
 
+@dataclass(frozen=True)
+class DecisionTrace:
+    """Optional copies from the actual decision evaluation; no new draws."""
+
+    candidates: np.ndarray
+    scenarios: tuple[Scenario, ...]
+    scenario_costs: np.ndarray
+    clearance_minutes: np.ndarray
+    mean_delay_minutes: np.ndarray
+    density_penalty: np.ndarray
+    mean_cost: np.ndarray
+    cvar_cost: np.ndarray
+    switch_cost: np.ndarray
+    objective: np.ndarray
+    selected_index: int
+
+
 class RobustRollingHorizonPolicy:
     name = "robust_rolling_horizon"
 
@@ -103,6 +120,7 @@ class RobustRollingHorizonPolicy:
         assumed_residual_sigma: float | None = None,
         assumed_compliance_mean: float | None = None,
         travel_time_multiplier: np.ndarray | None = None,
+        capture_trace: bool = False,
     ) -> None:
         if name_override is not None:
             self.name = name_override
@@ -117,6 +135,9 @@ class RobustRollingHorizonPolicy:
         self._last_path_observation: np.ndarray | None = None
         self._last_exit_observation: np.ndarray | None = None
         self.last_diagnostics = RobustPolicyDiagnostics()
+        self.capture_trace = capture_trace
+        self.last_trace: DecisionTrace | None = None
+        self._trace_components: tuple[np.ndarray, ...] | None = None
 
     def _controller_travel_time(self, spec: EgressSpec) -> np.ndarray:
         if self.travel_time_multiplier is None:
@@ -418,11 +439,18 @@ class RobustRollingHorizonPolicy:
             0.0,
             peak_density - spec.robust_control.safe_density_per_m2,
         )
-        return (
+        costs = (
             estimated_clearance_minutes
             + spec.robust_control.mean_delay_weight * mean_delay_minutes
             + spec.robust_control.density_weight * excess_density**2
         )
+        if self.capture_trace:
+            self._trace_components = (
+                estimated_clearance_minutes.copy(),
+                mean_delay_minutes.copy(),
+                (spec.robust_control.density_weight * excess_density**2).copy(),
+            )
+        return costs
 
     def decide(
         self, state: EgressState, spec: EgressSpec, rng: np.random.Generator
@@ -461,6 +489,27 @@ class RobustRollingHorizonPolicy:
             cvar_cost=float(cvar_cost[best_index]),
             candidate_count=len(candidates),
         )
+        self.last_trace = None
+        if self.capture_trace:
+            assert self._trace_components is not None
+            clearance, mean_delay, density_penalty = self._trace_components
+            self.last_trace = DecisionTrace(
+                candidates=candidate_array.copy(),
+                scenarios=tuple(
+                    Scenario(s.path_capacity_multiplier.copy(),
+                             s.exit_capacity_multiplier.copy(), s.compliance.copy())
+                    for s in scenarios
+                ),
+                scenario_costs=costs.copy(),
+                clearance_minutes=clearance,
+                mean_delay_minutes=mean_delay,
+                density_penalty=density_penalty,
+                mean_cost=mean_cost.copy(),
+                cvar_cost=cvar_cost.copy(),
+                switch_cost=switch_cost.copy(),
+                objective=objective.copy(),
+                selected_index=best_index,
+            )
         return candidates[best_index].copy()
 
     def _prediction_scenarios(

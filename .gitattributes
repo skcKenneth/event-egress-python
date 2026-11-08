@@ -1,0 +1,4 @@
+# Frozen artifacts have byte-level manifests; never rewrite their line endings.
+paper_artifacts/** -text
+revision_artifacts/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+paper/frozen_tables/** -text

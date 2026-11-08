@@ -1,0 +1,67 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,booktabs}
+\usepackage[hidelinks]{hyperref}
+\input{results.tex}
+\input{revision_results.tex}
+\title{Response to Reviewer \#2}
+\author{Hong U Lo \and Zibo Gao \and Peng Chi Lam \and Sok Kin Cheng}
+\date{}
+\begin{document}
+\maketitle
+\noindent\textbf{Affiliation:} St. Joseph Diocesan College (The Fifth School)\par\medskip
+\noindent\textbf{Manuscript:} When Does Online Estimation of Persistent Capacity Improve Dynamic Crowd Guidance? A Mesoscopic Queue-Network Study
+
+\medskip
+\noindent We thank the reviewer for the assessment and four constructive suggestions. The revision preserves the archived 200-run primary experiment and distinguishes its within-controller information effect from the direct comparison with reactive guidance. We also add a separately specified same-state diagnostic and a three-policy runtime comparison. Reviewer comments below are paraphrased by topic.
+
+\section*{1. Novelty relative to adaptive MPC and crowd guidance}
+\textbf{Comment summary.} Emphasize that the contribution is a controlled evaluation of information value rather than a fundamentally new guidance algorithm.
+
+\textbf{Response.} We agree and have narrowed the Abstract, Introduction, Related Work and Conclusion. Both primary controllers already observe current queues. Our estimand is the incremental closed-loop effect of updating persistent-capacity scenario centers under a shared controller configuration, pre-clipping log-spread, clipping rule and random-number design. It is not the total benefit of introducing live sensing or predictive control.
+
+The revised Related Work explicitly recognizes adaptive evacuation guidance and pedestrian-flow MPC. It adds Lopez-Carmona and Paricio Garcia's \href{https://doi.org/10.1016/j.trc.2023.104268}{2023 MISO study}, which compares prediction models with measured inflow against models treating inflow as an unmeasured disturbance. We distinguish that horizon-dependent prediction study from our capacity-center intervention and closed-loop clearance outcome. We also describe the estimator as passive learning from naturally saturated flow, rather than a dual controller that chooses actions for information acquisition.
+
+\textbf{Changes.} Abstract; Sections I--II; Section VII.
+
+\section*{2. Persistent capacities and saturated-throughput observations}
+\textbf{Comment summary.} Explain how fixed latent capacities and informative saturation observations limit practical applicability.
+
+\textbf{Response.} Section III now states explicitly that the simulator uses true step capacity to classify saturation. In this ideal noise-free setting, saturated throughput reveals the multiplier before smoothing; the existing EWMA contraction relation is conditional on such observations. We replaced the statement that unsaturated observations are ``uninformative'': they provide a capacity lower bound but do not point-identify the multiplier, and the implemented estimator does not update from them.
+
+We added separate default-regime summaries from the existing 50-run estimator dataset. At clearance, path MAE is \PathFinalMAE{} and exit MAE is \ExitFinalMAE{}; the fractions ever observed saturated are \PathObservedPct\% and \ExitObservedPct\%, respectively. These summaries show that the aggregate diagnostic should not be interpreted as learning every path's capacity. We identify exit observability as a plausible mechanism, while reserving a causal path-only/exit-only attribution for future ablations.
+
+The revision consistently calls the fault experiments \emph{controller-facing estimate faults}. Errors are applied to the already-computed estimates supplied to control; raw throughput, queues and saturation classification remain ideal. We also corrected the discussion of forgetting: EWMA already discounts old observations, but abrupt-change tracking depends on renewed saturation observations and update rates and has not been validated here.
+
+\textbf{Changes.} Sections III, IV, V-A, V-B and VI; Fig.~3 caption.
+
+\section*{3. Practical significance of the 2.17\% improvement}
+\textbf{Comment summary.} Discuss the modest average benefit in relation to additional estimation and computational requirements.
+
+\textbf{Response.} We now separate two adoption questions. Within an existing RH controller, the center-update effect is \PrimaryDiff~s (\PrimaryPct\%; 95\% paired-bootstrap interval $[\PrimaryCILow,\PrimaryCIHigh]$~s). This advances the final clearance instant by about 16~s in a roughly 12-min process; it does not mean that each person saves 16~s. The paired median is zero, win/tie/loss frequencies are \PrimaryWin\%/\PrimaryTie\%/\PrimaryLoss\%, and the worst observed paired loss is \WorstHarm~s.
+
+For adoption of the complete predictive controller instead of reactive balancing, the relevant direct effect is conditioned-minus-reactive: \SystemDiff~s, with interval $[\SystemCILow,\SystemCIHigh]$~s. Its interval includes zero, so the revision does not claim an established default-regime clearance advantage over reactive guidance. This comparison is now reported in the Abstract and Results and included in Fig.~2(c).
+
+The additional runtime experiment measures Reactive, Unconditioned and Conditioned decisions on shared early, middle and late states, using five warmups and 30 timed repetitions per policy/state. Table II and the associated metadata report the measured median and 95th percentile. \RuntimeResultsText
+
+These measurements concern computation on the recorded machine. Instrumentation, calibration, maintenance and deployment costs are not measured, so no overall cost-effectiveness claim is made.
+
+\textbf{Changes.} Abstract; Section V-A; Section V-C and Table II; Section VI; Fig.~2(c).
+
+\section*{4. Unconditioned RH versus the reactive baseline}
+\textbf{Comment summary.} Explain why unconditioned RH underperforms reactive guidance, especially in relation to candidate selection and prediction-model mismatch.
+
+\textbf{Response.} We now explain why including a reactive recommendation in the candidate set does not guarantee superiority over the reactive policy. Prediction holds the candidate recommendation fixed for 300~s, while the executed reactive policy recomputes its recommendation every 120~s. Moreover, RH minimizes a combined clearance, person-time, density and switching score. A better predicted score need not imply faster realized clearance. Nominal capacity centers, finite scenario samples and the terminal approximation are additional possible sources of ranking differences; the text does not assign the observed policy-level disadvantage to any single one without evidence.
+
+We added an independent default-regime diagnostic on seeds 110000--110029, specified separately from the archived primary experiment. At pre-decision states from both primary policies at 120, 360 and 600~s, the actual selected action is compared with the reactive action under the same realized capacity and compliance. One counterfactual holds the action fixed to clearance. The other executes it for 120~s and then applies reactive updates on each branch. Full-objective gaps are kept separate from clearance-component gaps; equivalent actions, skipped post-clearance states and incomplete branches remain visible. Bootstrap resampling is clustered by environmental seed.
+
+\DiagnosticResultsText
+
+These checks address the scoring and first-action questions at the saved states. They do not replace the archived full-policy comparison or identify a unique cause of its difference.
+
+\textbf{Changes.} Section IV-A; Section V-C and Fig.~4; Section VI; diagnostic protocol and machine-readable results in the revision package.
+
+\section*{Numerical provenance and interpretation}
+The revised manuscript is built from the supplied equal-spread LaTeX source and the corresponding archived CSV tables. The separate supplied 2.73\% PDF is an older version; the primary result for this revision is \PrimaryReductionPct\%. The original frozen artifacts remain unchanged. New diagnostic outputs and figures are versioned separately, and documentation written during this revision is identified as retrospective where it describes the historical experiment. It is not presented as a recovered preregistration.
+
+\end{document}

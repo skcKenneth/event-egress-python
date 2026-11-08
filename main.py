@@ -96,6 +96,24 @@ def main() -> None:
     runtime.add_argument("--repeats", type=int, default=25)
     runtime.add_argument("--seed", type=int, default=20_260_622)
 
+    diagnostic = subparsers.add_parser(
+        "decision-diagnostics", help="Run the separate PIC2026 action diagnostics."
+    )
+    diagnostic.add_argument("--seed-start", type=int, default=110000)
+    diagnostic.add_argument("--seeds", type=int, default=30)
+    diagnostic.add_argument("--output", type=Path, default=ROOT / "outputs" / "pic2026_revision")
+
+    comparison = subparsers.add_parser(
+        "runtime-comparison", help="Time reactive and matched mean controllers on shared snapshots."
+    )
+    comparison.add_argument("--seed-start", type=int, default=110000)
+    comparison.add_argument("--seeds", type=int, default=5)
+    comparison.add_argument("--warmups", type=int, default=5)
+    comparison.add_argument("--repetitions", type=int, default=30)
+    comparison.add_argument("--output", type=Path, default=ROOT / "outputs" / "pic2026_revision")
+    subparsers.add_parser("revision-artifacts", help="Render the separate revision paper artifacts.")
+    subparsers.add_parser("check-revision", help="Check revision provenance and primary-seed replay.")
+
     args = parser.parse_args()
 
     if args.command == "verify":
@@ -165,6 +183,23 @@ def main() -> None:
                 str(args.seed),
             ]
         )
+    elif args.command == "decision-diagnostics":
+        run_command([
+            sys.executable, str(ROOT / "experiments" / "run_decision_diagnostics.py"),
+            "--seed-start", str(args.seed_start), "--seeds", str(args.seeds),
+            "--output", str(args.output),
+        ])
+    elif args.command == "runtime-comparison":
+        run_command([
+            sys.executable, str(ROOT / "experiments" / "run_runtime_comparison.py"),
+            "--seed-start", str(args.seed_start), "--seeds", str(args.seeds),
+            "--warmups", str(args.warmups), "--repetitions", str(args.repetitions),
+            "--output", str(args.output),
+        ])
+    elif args.command == "revision-artifacts":
+        run_command([sys.executable, str(ROOT / "experiments" / "render_revision_artifacts.py")])
+    elif args.command == "check-revision":
+        run_command([sys.executable, str(ROOT / "scripts" / "check_revision.py")])
 
 
 if __name__ == "__main__":
