@@ -186,4 +186,4 @@ See [REPRODUCIBILITY.md](REPRODUCIBILITY.md) for seed ranges, RNG coupling, file
 
 Citation metadata are provided in `CITATION.cff`. No open-source license has been selected for this package; see `LICENSE_STATUS.md`. Scientific use should cite the accompanying paper and preserve the stated non-operational scope.
 
-Before a public or camera-ready release, confirm the complete author list in `CITATION.cff`, fill the manuscript author/affiliation block, and select an explicit software license if redistribution is intended.
+The manuscript author block and preferred paper citation in `CITATION.cff` use the four-author information supplied on November 8, 2026. Before a camera-ready release, authors must review the manuscript and current conference instructions. Software contributor metadata retain their existing attribution; select an explicit software license if redistribution is intended.

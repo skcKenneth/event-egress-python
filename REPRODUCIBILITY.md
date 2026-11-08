@@ -61,6 +61,8 @@ The snapshot counterfactuals measure action consequences under specified
 continuations, not full RH-versus-reactive policy effects. Runtime observations
 are hardware-specific and do not certify operational real-time performance.
 
-The submitted manuscript version in CMT was not inspected. Author/affiliation
-information and final conference instructions need confirmation before actual
-submission. Private review PDFs and correspondence are excluded from this repo.
+The submitted manuscript version in CMT was not inspected. Manuscript author
+order, affiliation and emails were filled from the author's November 8, 2026
+information. Final author review and current conference instructions remain
+submission requirements. Private review PDFs and correspondence are excluded
+from this repo.

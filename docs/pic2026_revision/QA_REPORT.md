@@ -58,9 +58,11 @@ separately. Timing excludes preparation and I/O, and is machine-specific.
 
 ## Remaining submission requirements
 
-The manuscript is a review copy with an incomplete author/affiliation block.
-Authors must provide the final details and review scientific content and the
-AI-assistance disclosure. Current camera-ready instructions must be checked;
+The manuscript is a review copy. Its author order, shared affiliation and four
+emails were filled from the author's November 8, 2026 information and checked
+against that source. The preferred paper citation uses the same author order;
+no corresponding-author role was inferred. Authors must review scientific
+content and the AI-assistance disclosure. Current camera-ready instructions must be checked;
 the supplied acceptance correspondence described November 20 as tentative.
 No CMT submission, registration, payment, merge, publication or field
 validation was performed as part of this revision.
