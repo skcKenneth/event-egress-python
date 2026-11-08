@@ -1,0 +1,30 @@
+\documentclass[10pt]{article}
+\usepackage[letterpaper,textwidth=516pt,top=0.45in,bottom=0.55in]{geometry}
+\usepackage{graphicx}
+\usepackage{mathptmx}
+\usepackage[hidelinks]{hyperref}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\pagestyle{plain}
+
+% Portable companion: keep this source beside the before/ and figures/ folders.
+% Every image is placed at the paper's measured 516-pt text width.
+\newcommand{\comparisonpage}[3]{%
+  {\normalsize\bfseries Figure #1: #2}\par
+  {\small Both views use full text width; the baseline paper used 90\%.}\par
+  {\small\bfseries Before --- baseline dc1d9f4}\par
+  \includegraphics[width=\textwidth]{before/#3.pdf}\par
+  \vspace{8pt}
+  {\small\bfseries After --- targeted camera-ready refinement}\par
+  \includegraphics[width=\textwidth]{figures/#3.pdf}\par
+}
+
+\begin{document}
+\comparisonpage{1}{Benchmark and information value}{fig1_system_overview}
+\newpage
+\comparisonpage{2}{Primary evidence}{fig2_performance_landscape}
+\newpage
+\comparisonpage{3}{Robustness and failure diagnostics}{fig3_context_validation}
+\newpage
+\comparisonpage{4}{Same-state diagnostics}{fig4_decision_diagnostics}
+\end{document}

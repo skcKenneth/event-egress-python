@@ -45,6 +45,7 @@ Use the artifact renderer after copying validated new tables there:
 
 ```powershell
 python main.py revision-artifacts
+python main.py camera-ready-figures
 latexmk -cd -pdf -interaction=nonstopmode -halt-on-error paper/main.tex
 latexmk -cd -pdf -interaction=nonstopmode -halt-on-error paper/response_to_reviewers.tex
 ```
@@ -52,6 +53,18 @@ latexmk -cd -pdf -interaction=nonstopmode -halt-on-error paper/response_to_revie
 The renderer regenerates numerical TeX inputs from frozen/new CSVs and writes
 revised figures to the paper and revision directories. It never writes into
 the original `paper_artifacts/`. Build auxiliaries are ignored by Git.
+
+For the latest figure-only refinement, run only `camera-ready-figures` and the
+LaTeX build; no experiment runners are needed. This command reads both archived
+bundles, checks their hashes, and writes a separate fixed-width presentation
+under `camera_ready_artifacts/2026-11-08/`. All axes and major labels are at least
+7.2 pt at the paper's measured 516-TeX-point text width. The numerical data JSON
+and tests retain marginal versus paired intervals and descriptive percentile
+bands. The original render commands remain available for historical layouts.
+
+`scripts/package_revision.py` exports committed raw Git blobs, so PDF and ZIP
+members match the selected commit despite Windows line-ending conversion. It
+also archives a previous delivery before replacing the latest filenames.
 
 ## Interpretation and release boundary
 
