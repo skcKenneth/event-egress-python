@@ -23,6 +23,21 @@ no original preregistration record was supplied in this repository.
 
 ## November 2026 targeted revision
 
+### Camera-ready figure refinement
+
+The latest six-page manuscript retains four figures and all existing numerical
+results. Render its refined presentation without running experiments:
+
+```bash
+python main.py camera-ready-figures
+```
+
+The fixed-width figures, exact plotted numbers, font/input audit and before/after
+comparison are under `camera_ready_artifacts/2026-11-08/`. The original
+`paper_artifacts/` and `revision_artifacts/` bundles remain unchanged. The
+`revision-artifacts` command below reproduces the earlier revision presentation;
+run `camera-ready-figures` afterwards when compiling the latest manuscript.
+
 The revision preserves the original frozen study and separately adds matched-state
 action diagnostics and a three-policy runtime comparison. See
 [the new diagnostic protocol](docs/pic2026_revision/DIAGNOSTIC_PROTOCOL.md) and

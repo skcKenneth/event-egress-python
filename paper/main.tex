@@ -25,6 +25,9 @@
 \begin{document}
 \maketitle
 \raggedbottom
+% Keep four full-width figures readable within the six-page paper.
+\setlength{\dbltextfloatsep}{9pt plus 1pt minus 1pt}
+\setlength{\dblfloatsep}{9pt plus 1pt minus 1pt}
 
 \begin{abstract}
 Dynamic crowd guidance may improve through reactive balancing, predictive lookahead, or online information. We quantify the incremental value of estimating persistent but initially unknown capacities in a mesoscopic queue-network benchmark where both controllers already observe current queues. The primary comparison updates capacity-scenario centers within a shared rolling-horizon design, retaining the same pre-clipping log-spread, clipping rule, and random-number coupling. Across 200 paired validation runs, conditioning reduced mean clearance time by \PrimaryReduction~s (\PrimaryReductionPct\%; conditioned-minus-unconditioned 95\% paired-bootstrap interval $[\PrimaryCILow,\PrimaryCIHigh]$~s). The direct conditioned-minus-reactive effect was \SystemDiff~s ($[\SystemCILow,\SystemCIHigh]$~s), leaving its clearance advantage over reactive guidance unresolved. Estimator diagnostics distinguish well-observed exits from sparsely observed paths. Independent same-state counterfactuals examine candidate scoring, and a three-policy runtime comparison measures computational cost. The evidence supports a modest within-controller benefit under the specified synthetic assumptions; it does not establish general superiority of predictive guidance or operational crowd-safety performance.
@@ -55,8 +58,8 @@ Our specific comparison concerns the closed-loop clearance effect of updating pe
 
 \begin{figure*}[t]
     \centering
-    \includegraphics[width=0.90\textwidth]{fig1_system_overview.pdf}
-    \caption{Benchmark and value-of-information design. (a) Base queue network. (b) Matched feedback controller. (c) Conditioned-minus-unconditioned mean clearance effect across uncertainty and compliance; negative values favor conditioning.}
+    \includegraphics[width=\textwidth]{fig1_system_overview.pdf}
+    \caption{Benchmark and information value. (a) Base queue network. (b) Matched feedback controller. (c) Conditioned-minus-unconditioned mean clearance effect (\%): blue is negative and orange positive; negative favors conditioning. Stars mark 95\% paired-bootstrap intervals containing zero, including $[0,0]$; blue cell borders mark intervals entirely below zero.}
     \label{fig:overview}
 \end{figure*}
 
@@ -144,8 +147,8 @@ Oracle-capacity mean & \OracleMean & \OraclePninety & \OracleDensity\\
 
 \begin{figure*}[t]
     \centering
-    \includegraphics[width=0.90\textwidth]{fig2_performance_landscape.pdf}
-    \caption{Primary evidence. (a) Paired-validation policy ladder. (b) Paired center-only information effect. (c) Component effects and direct conditioned--reactive comparison. (d) Default-regime capacity-estimator MAE and fraction of links ever observed under saturation.}
+    \includegraphics[width=\textwidth]{fig2_performance_landscape.pdf}
+    \caption{Primary evidence. (a) Discrete policy means with marginal 95\% bootstrap intervals; runs are paired by seed. (b) Paired conditioned-minus-unconditioned clearance differences. (c) Paired mean effects and 95\% bootstrap intervals; filled markers exclude zero and hollow markers include zero. Negative differences favor the first policy. (d) Mean capacity-multiplier MAE and mean fraction of links ever observed saturated. Blue shading is the 10th--90th percentile range of run-level MAE across 50 seeds at each time, a descriptive range rather than a confidence band.}
     \label{fig:primary}
 \end{figure*}
 
@@ -162,8 +165,8 @@ The map in Fig.~\ref{fig:overview}(c) shows that information becomes actionable 
 
 \begin{figure*}[t]
     \centering
-    \includegraphics[width=0.90\textwidth]{fig3_context_validation.pdf}
-    \caption{Transfer and failure diagnostics. (a) Time-step robustness. (b) Center-only effects across five synthetic network families at $\sigma=0.30$ and $\mu=0.68$. (c) Controller-facing estimate-fault effects in the default and high-information regimes. Intervals are paired-bootstrap 95\% intervals.}
+    \includegraphics[width=\textwidth]{fig3_context_validation.pdf}
+    \caption{Robustness and estimate-fault diagnostics (C: conditioned; U: unconditioned). (a) Effects at the three tested time steps. (b) C-minus-U effects across five synthetic network families ($\sigma=0.30$, $\mu=0.68$). (c) Controller-facing estimate faults in the default and high-information regimes. Intervals are paired-bootstrap 95\% intervals; filled markers exclude zero and hollow markers include zero. Negative differences favor conditioning.}
     \label{fig:robustness}
 \end{figure*}
 
@@ -176,8 +179,8 @@ Under clean controller-facing estimates, the effect was \DefaultCleanSensor~s in
 
 \begin{figure*}[t]
     \centering
-    \includegraphics[width=0.90\textwidth]{fig4_decision_diagnostics.pdf}
-    \caption{Independent same-state decision diagnostics. (a) Strict reversals between predicted clearance-component and realized fixed-action ordering, as a percentage of all 90 completed decisions per collector; predicted or actual ties are not reversals. (b) Mean selected-minus-reactive residual clearance differences under both continuations; negative values favor the selected action. Intervals are 95\% seed-bootstrap intervals.}
+    \includegraphics[width=\textwidth]{fig4_decision_diagnostics.pdf}
+    \caption{Same-state diagnostics. (a) Strict predicted-versus-realized fixed-action clearance-rank reversals among all 90 completed decisions per collector; ties are not reversals. Collectors visit different state sets, so their rate difference is descriptive. (b) Selected-minus-reactive residual clearance effects: squares hold actions fixed; circles apply actions for 120~s then use reactive guidance. Actions are paired within each snapshot. Intervals resample environmental seeds (95\%); hollow effect markers include zero, and negative effects favor the selected action.}
     \label{fig:decisions}
 \end{figure*}
 
@@ -205,7 +208,6 @@ Updating persistent-capacity forecast centers improved mean clearance within the
 \section*{AI Assistance Disclosure}
 Generative AI tools assisted manuscript revision and research-code development. Responsibility for the final manuscript, code, and interpretation remains with the authors.
 
-\IEEEtriggeratref{6}
 \bibliographystyle{IEEEtran}
 \bibliography{references}
 

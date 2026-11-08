@@ -113,6 +113,8 @@ def main() -> None:
     comparison.add_argument("--output", type=Path, default=ROOT / "outputs" / "pic2026_revision")
     subparsers.add_parser("revision-artifacts", help="Render the separate revision paper artifacts.")
     subparsers.add_parser("check-revision", help="Check revision provenance and primary-seed replay.")
+    camera = subparsers.add_parser("camera-ready-figures", help="Refine four figures from existing data without rerunning experiments.")
+    camera.add_argument("--output", type=Path, default=ROOT / "camera_ready_artifacts" / "2026-11-08")
 
     args = parser.parse_args()
 
@@ -200,6 +202,9 @@ def main() -> None:
         run_command([sys.executable, str(ROOT / "experiments" / "render_revision_artifacts.py")])
     elif args.command == "check-revision":
         run_command([sys.executable, str(ROOT / "scripts" / "check_revision.py")])
+    elif args.command == "camera-ready-figures":
+        run_command([sys.executable, str(ROOT / "experiments" / "render_camera_ready_figures.py"),
+                     "--output", str(args.output)])
 
 
 if __name__ == "__main__":

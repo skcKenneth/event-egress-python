@@ -1,0 +1,1075 @@
+{
+  "baseline_commit": "dc1d9f4b901751af99f760e3c2b0e64add413a24",
+  "scope": "presentation-only refinement",
+  "data_and_statistics_changed": false,
+  "new_experiments": 0,
+  "input_sha256": {
+    "paper_artifacts/ARTIFACTS.sha256": "c6f69adf0d1b8842b517abce11dc2817aa2d131a353684ea6167de0e8e978a7c",
+    "paper_artifacts/figures/fig1_system_overview.pdf": "a22c243772a6ae4d21c13733c4c30985f465da6c15ba5465a0e0bbea9a79c83c",
+    "paper_artifacts/figures/fig1_system_overview.png": "0e12d72a158290fc6692bab9d8f7e28d4a8cd4528d91ddefac406750494cb6db",
+    "paper_artifacts/figures/fig2_performance_landscape.pdf": "ab9ccdd0256fadffb50eb05eb3631d324cd6e28f0df06ebda86d8d081bf7d3e3",
+    "paper_artifacts/figures/fig2_performance_landscape.png": "83e75218e357c939a27587e35303375cd20153358f2b442fabbc0fc32b5fb3e3",
+    "paper_artifacts/figures/fig3_context_validation.pdf": "dd493090d2148ddc7d999d1cf6138fc71d2802dbc0d9a8d6141000597c632fd0",
+    "paper_artifacts/figures/fig3_context_validation.png": "705cbb3c20476467452bba939e77fe3238bf5f113f756f98225a295f278e7893",
+    "paper_artifacts/README.md": "91efd1af3b9d267a9866010da174588c9597dc7c599845caad6490f2b67dd190",
+    "paper_artifacts/reference_manifest.json": "e40fe7c82de4c21a04472c6c4a3cf5fa41becbbb573fa31863b3946a308f905b",
+    "paper_artifacts/RESULTS_SUMMARY.md": "028ffbe1c113cab499989520c1ffbc3cc508c5a4c9d46b876818c48a95598dec",
+    "paper_artifacts/tables/estimator_diagnostics_final.csv": "1c63b7565ff01300d7887373f10db7e9d0b4d98091c0d0e7540b2cacbe5dbcc4",
+    "paper_artifacts/tables/estimator_diagnostics_runs.csv": "03f3fd90fa2912e00efb90afcf618959a63454609838cba11e0e2944750c468b",
+    "paper_artifacts/tables/estimator_diagnostics_summary.csv": "6450764dc032f86bbb280c2555b5f0fe3dff81c0f1740aeaf273c0a81131ada5",
+    "paper_artifacts/tables/information_regime_map_runs.csv": "79f72119a540eae9591ac38a42ff6935d0029a4a6c230efacf684fc896d4c2be",
+    "paper_artifacts/tables/information_regime_map_summary.csv": "5d3d449ae456de22585cafa07d262d1f9eb30777c1556901eedbc6c296ff59c6",
+    "paper_artifacts/tables/information_value_validation_effects.csv": "b931faccd7024223bb8ff048fbfe87504a6a3cee3cb00169690503f282ae1572",
+    "paper_artifacts/tables/information_value_validation_runs.csv": "f66a8381b372de18db4632409933674f42259d1afbf5c11a64cdc1978fd68794",
+    "paper_artifacts/tables/information_value_validation_summary.csv": "d8b70944b32e8352568c6ca917588e2e6675be94e157760aa0ce689b74b4e2ba",
+    "paper_artifacts/tables/sensor_ablation_runs.csv": "9be7ba88009aadbe838278cc7242522a9ac2ba4644b39cec517b6e9e38c92179",
+    "paper_artifacts/tables/sensor_ablation_summary.csv": "2880db5540f978e39a22085829409f53f5f5dbee25cfbf62e8ce7ef52b9fa408",
+    "paper_artifacts/tables/sensor_condition_effects.csv": "626d741c9ea66c804cb12dbf368839475be01a176b1b315787d8e29a54eb3d7b",
+    "paper_artifacts/tables/time_step_sensitivity_effects.csv": "b0282c7fbd374b3723994efd32eaf838d2ccf71d2033869874f1336955e1cf8f",
+    "paper_artifacts/tables/time_step_sensitivity_runs.csv": "a0ce045e52481ce80e0b3fba582245943da8db3c9b4e67fc0903dff182af1d09",
+    "paper_artifacts/tables/time_step_sensitivity_summary.csv": "e95fadeb63b00950e9c951cde9f91d7fdc2108c42ea00643296b98c62e370904",
+    "paper_artifacts/tables/topology_generalization_effects.csv": "38dc56312f61dc447d88f676bc8fd0afa1cdd7e5915924c610a162e19fd0ca25",
+    "paper_artifacts/tables/topology_generalization_runs.csv": "213932e945fb7e62d22ed638650c180d0baf60061141a6cfac7d9621834bd481",
+    "paper_artifacts/tables/topology_generalization_summary.csv": "1802e09f4c156173be9b1cb928c14fb8cdf092381c166f2ee5b2ebac34e64b5a",
+    "revision_artifacts/2026-11/ARTIFACTS.sha256": "5a65b785b6e1dc4b31dbd1bb0d3ad967a370f72de4a2dd86e3fef98fcf7a9c93",
+    "revision_artifacts/2026-11/candidate_scores.csv": "8e3ef5618c580d7fa68d7edcd36ee63eb5ba49b8a14c1c3a0e3ec9e39cce2c2c",
+    "revision_artifacts/2026-11/counterfactual_branches.csv": "912bc8cfad2950d3f8f74ca427de6297b089bb28a4f7b2f62ddac87f635dd531",
+    "revision_artifacts/2026-11/decision_diagnostics.csv": "e399d2a391ad867b98e9a886cd060a6a5aa901167bc5cb604339c76ec5649039",
+    "revision_artifacts/2026-11/decision_diagnostics_metadata.json": "c4423263160e2778933409f3e3807685c239f1ca602b9de34a296fd0b8be5f88",
+    "revision_artifacts/2026-11/decision_diagnostics_per_seed.csv": "cb228b1c74cb49329eea8a4f523ede02c4447b0e78841d510f04673e2ca63207",
+    "revision_artifacts/2026-11/decision_diagnostics_summary.csv": "c7d6a543cac73e49ab3ed95cd364d3617dab8d8aae2f3893bb6e7a464c30d93e",
+    "revision_artifacts/2026-11/figures/fig1_system_overview.pdf": "6f3692027b175026365b12818268fec8847560306a6d9f532580a6ddca1bf8a7",
+    "revision_artifacts/2026-11/figures/fig1_system_overview.png": "d928e3196b5291d2bfab0f8b845c2d15ba6483d53437d964c3dc215818940403",
+    "revision_artifacts/2026-11/figures/fig2_performance_landscape.pdf": "a1c3942f380fc8ce1e83c6fc85b999d2a601f12d6b2023012b7958744bf2e719",
+    "revision_artifacts/2026-11/figures/fig2_performance_landscape.png": "541a22bbb258b76d30c87d90a26b6b42e1fc63f36fe1e2cce1c0a43851a359c4",
+    "revision_artifacts/2026-11/figures/fig3_context_validation.pdf": "5cb124ba10ce6cdccaab901899b4cb4cd17ff977024770e2e3835f5078b958d0",
+    "revision_artifacts/2026-11/figures/fig3_context_validation.png": "4d9f4fada1a044ee732b70c0aa45f074a2b35967f8d98b845dc32c17707e1f97",
+    "revision_artifacts/2026-11/figures/fig4_decision_diagnostics.pdf": "fdfd1c199a5d200183e9a68c236eaa2634cd80150134116a95592721e637bfff",
+    "revision_artifacts/2026-11/figures/fig4_decision_diagnostics.png": "16b05c42ebf667631f6b793cc806191583bee2c56dd0cca5b3b36c0697a762e2",
+    "revision_artifacts/2026-11/README.md": "31343a96fd32311e66cf0c935707e21c3bfd99f6ff888e46d72316a9564d2c46",
+    "revision_artifacts/2026-11/results.tex": "88ded52757f8a82264986871ba65d45e1aafc10843fedd0ff7c15dacde15ca76",
+    "revision_artifacts/2026-11/revision_results.tex": "cf1f31939bac4450a4ed3e74f1db89918041474214ad2853ef74bb6e619b722f",
+    "revision_artifacts/2026-11/runtime_comparison_metadata.json": "3f185e168d478ffde4fe94a4e0fbc4c7a65283d3189091a31d3a60fae91daeaa",
+    "revision_artifacts/2026-11/runtime_comparison_runs.csv": "1275ba31e57ea9c9cf46a4368e4b6179b239af54161f7fffc8f4b096e66f6a71",
+    "revision_artifacts/2026-11/runtime_comparison_snapshots.csv": "1a533375cc0466f10e713943121e33a22c758e1f733d0d39ee698bf73f3a192d",
+    "revision_artifacts/2026-11/runtime_comparison_summary.csv": "9b5f30ec42aa1face8dea10566523e8b81caa1167af819c0d1b5ae315b1bd5f1",
+    "revision_artifacts/2026-11/runtime_table.tex": "aaf198c0ca06e3fb4955c8ba78c832746a4cabc7bcc21ac7b6f27389bd020c2c",
+    "revision_artifacts/2026-11/snapshot_eligibility.csv": "4a158940e5763da524fe5cebe3edd1ad09d19e89299e1077aa27aa320f4b5f4c",
+    "revision_artifacts/2026-11/snapshots/110000_conditioned_mean_equal_spread_120.npz": "f06ebe9aeebea2d17b67a736b66722a7b0e3812e1aaa1aaa755177dbd9f0a5b8",
+    "revision_artifacts/2026-11/snapshots/110000_conditioned_mean_equal_spread_360.npz": "bf25a502c8a025ab2266a06e99bd28a8b61081379ea4efc8be5f4fe24b0a748c",
+    "revision_artifacts/2026-11/snapshots/110000_conditioned_mean_equal_spread_600.npz": "f3a84538ac90584f063ff82ac5c29fb6f641cce467b481749d0426a35cbe0b1a",
+    "revision_artifacts/2026-11/snapshots/110000_unconditioned_mean_only_120.npz": "368c7bac92c4ff9e76047baa7218cb2e1b7d3b0342c8548d39d3af2d773764ec",
+    "revision_artifacts/2026-11/snapshots/110000_unconditioned_mean_only_360.npz": "7167e652e3871ef63dce73dbb7445937e1822b4ea4442740ec4fb023c5d7739d",
+    "revision_artifacts/2026-11/snapshots/110000_unconditioned_mean_only_600.npz": "8d05351cef786ef376c6a54c1c5e1716cd35da7384230c93189b6ca2eefe5b89",
+    "revision_artifacts/2026-11/snapshots/110001_conditioned_mean_equal_spread_120.npz": "6ecef1ca8c9dbf7dcb52d44b71cf38153f9880a9e844051884e7d1351e1899a0",
+    "revision_artifacts/2026-11/snapshots/110001_conditioned_mean_equal_spread_360.npz": "d1a749f44f1c666a79d754d72cefe3d203cccad4da5e738693886f8502a3137f",
+    "revision_artifacts/2026-11/snapshots/110001_conditioned_mean_equal_spread_600.npz": "2390b9953557b003e132ac258c19ae345d701ae98904c0bc4a560c461cb6f5ba",
+    "revision_artifacts/2026-11/snapshots/110001_unconditioned_mean_only_120.npz": "cb8651250349afc182f2c977eacd192643a2beba831e04408bc8695fc2c3c727",
+    "revision_artifacts/2026-11/snapshots/110001_unconditioned_mean_only_360.npz": "f8c5c52177a039d198ddc87dc7489d34f56cef13da177eaca24992cb2eacc48c",
+    "revision_artifacts/2026-11/snapshots/110001_unconditioned_mean_only_600.npz": "7217ba54376e9a66b9bcd4c6d6fd699a0d12d86a826739005e6978b13ad9a812",
+    "revision_artifacts/2026-11/snapshots/110002_conditioned_mean_equal_spread_120.npz": "f99ea1d6d77e773fd6f7e26fe1f5ac3f32ee3826af8ae5e9e843ffc4eef92b63",
+    "revision_artifacts/2026-11/snapshots/110002_conditioned_mean_equal_spread_360.npz": "4d15311acbdd2a9870904958ba2e83fded0087cc8537f1f389ae77784e7dfaba",
+    "revision_artifacts/2026-11/snapshots/110002_conditioned_mean_equal_spread_600.npz": "3245ce8a60a98c69c436706f13c6e35cdf3be9580400032bccc2d64a04347945",
+    "revision_artifacts/2026-11/snapshots/110002_unconditioned_mean_only_120.npz": "4c2b3de74c6d1bb0294f0b2443ec6e9e83bb36b04922660b21a4269df006a62e",
+    "revision_artifacts/2026-11/snapshots/110002_unconditioned_mean_only_360.npz": "d5a9db2763f698eff3746ca8dfbfa93fdb9e418f1e1f62a0549af9200608d004",
+    "revision_artifacts/2026-11/snapshots/110002_unconditioned_mean_only_600.npz": "f1ef679773c14d39fc86451dd6e8e122231059826175b69ae81b72f32364117a",
+    "revision_artifacts/2026-11/snapshots/110003_conditioned_mean_equal_spread_120.npz": "a6ef9e20f297c5b32832e1fc1b8956f1962aa19fb97cd03699a2124ddfba6700",
+    "revision_artifacts/2026-11/snapshots/110003_conditioned_mean_equal_spread_360.npz": "3db345c6a85a288447d01d7edf9f6165d1c72ee0d3f6a728866ff94e576bd59f",
+    "revision_artifacts/2026-11/snapshots/110003_conditioned_mean_equal_spread_600.npz": "2ae244d0466ad008d4717724f6e6785df7136ccfede954cce440cca455480707",
+    "revision_artifacts/2026-11/snapshots/110003_unconditioned_mean_only_120.npz": "cad71316588898ee0d08e71eeb7b1d8a5c626c5d8d6a757f822f4eeccc9f35a9",
+    "revision_artifacts/2026-11/snapshots/110003_unconditioned_mean_only_360.npz": "8a88f7e3042010d51a05115accc26e3caa8282f4cc2f1313add780ef0f24851c",
+    "revision_artifacts/2026-11/snapshots/110003_unconditioned_mean_only_600.npz": "c442f509333e43b161ea6f5239e83bef95d22fbf58cca050b54ddbbd6fcbecda",
+    "revision_artifacts/2026-11/snapshots/110004_conditioned_mean_equal_spread_120.npz": "8129f15a66f759e3bd9944b5f13734d60545500e2403cb41ecbea4a6ff599ddc",
+    "revision_artifacts/2026-11/snapshots/110004_conditioned_mean_equal_spread_360.npz": "9305a649f58f9434495182ea8e4933482086576fcf72a86b997ab14302c07a29",
+    "revision_artifacts/2026-11/snapshots/110004_conditioned_mean_equal_spread_600.npz": "9335a013ff285d7d4e870158e13cf07da6542ee2043d66c2e2291d16957c1e19",
+    "revision_artifacts/2026-11/snapshots/110004_unconditioned_mean_only_120.npz": "87968fc95e429b922fea1d0a56f860192a8bba2b0a56322cbfeac55f0e18aa9b",
+    "revision_artifacts/2026-11/snapshots/110004_unconditioned_mean_only_360.npz": "77afab06f051a10d753e448d129c7975d013bb9ff3ba6f286a672bf4016969e5",
+    "revision_artifacts/2026-11/snapshots/110004_unconditioned_mean_only_600.npz": "68a865df8617633b8b1b72f1b7488ee46ff25d6fe7cd03855f7b3ca33905b717",
+    "revision_artifacts/2026-11/snapshots/110005_conditioned_mean_equal_spread_120.npz": "adbddd5caf7de34bd051c1da7d13008ecc42defe13a90c4ecb6449f72cd91c91",
+    "revision_artifacts/2026-11/snapshots/110005_conditioned_mean_equal_spread_360.npz": "b3f5618b19250e26397e8f70478fb212e65fe806f6aee602d922e79109c5343c",
+    "revision_artifacts/2026-11/snapshots/110005_conditioned_mean_equal_spread_600.npz": "2bb705ad74c5a2f9ec83abdd5bd970bdcca265e99c7a829de565dce12ddaebf2",
+    "revision_artifacts/2026-11/snapshots/110005_unconditioned_mean_only_120.npz": "c81aa2fcd559e528b4d8281fc3e11200b9bfa99cc235ad4dd36b70088676bad5",
+    "revision_artifacts/2026-11/snapshots/110005_unconditioned_mean_only_360.npz": "b904402611810a9391bdb5018a8356ebe800ad0c6673984100b60f9ca1cb99c1",
+    "revision_artifacts/2026-11/snapshots/110005_unconditioned_mean_only_600.npz": "e100b30f2a6896944bb4e00fc8bab7e3f0b9c5979cda8fd7e2534b644c4d2027",
+    "revision_artifacts/2026-11/snapshots/110006_conditioned_mean_equal_spread_120.npz": "6db53a9cebf439ee3c424efa7a69350c294479d270dc4db31b85d35c6b7bbede",
+    "revision_artifacts/2026-11/snapshots/110006_conditioned_mean_equal_spread_360.npz": "d2746c0299c0badcbfaea9b740b5e62bd8b7bdd12e1f40514688cc70ea050dd8",
+    "revision_artifacts/2026-11/snapshots/110006_conditioned_mean_equal_spread_600.npz": "a52ca1b473b3ecf5f4431ebfd05bceda07b21a0f127e3a523100038be35a50d7",
+    "revision_artifacts/2026-11/snapshots/110006_unconditioned_mean_only_120.npz": "caf2307cbc0d7316fdd46902246826bfe616c867fea9dba4c51ba1c14bead74c",
+    "revision_artifacts/2026-11/snapshots/110006_unconditioned_mean_only_360.npz": "af421245e2fcdf428acc070e06cd89411d1f7dbb6bb0fd3d4a80e71bc6dd1c2d",
+    "revision_artifacts/2026-11/snapshots/110006_unconditioned_mean_only_600.npz": "0f72baf56c68de573491b334853f344ca84ac4867d0cae26243ca0b86ef51e07",
+    "revision_artifacts/2026-11/snapshots/110007_conditioned_mean_equal_spread_120.npz": "c58c86f539af202dff8d3e85e060cb137cf45a39c43df14846387d2894761756",
+    "revision_artifacts/2026-11/snapshots/110007_conditioned_mean_equal_spread_360.npz": "736d58d9a2db9516979af434c72184d2fb68645376e4e1d34baa8b9ffd87c1fd",
+    "revision_artifacts/2026-11/snapshots/110007_conditioned_mean_equal_spread_600.npz": "cf505a8c27976bcbc70ccf00ca0fa4a3b9c97e967e439e0136f33796ce39b2fa",
+    "revision_artifacts/2026-11/snapshots/110007_unconditioned_mean_only_120.npz": "72d1cb232fd4092666abfd2b631757b4758ed67cfa0633fcd1a904693ee869ff",
+    "revision_artifacts/2026-11/snapshots/110007_unconditioned_mean_only_360.npz": "509449161a07405fd69d5b36fd2084a4d6682a5ed9f25ad695ef6cafb04d937e",
+    "revision_artifacts/2026-11/snapshots/110007_unconditioned_mean_only_600.npz": "b41f30affa7675ce318feb091bdf0ef5e1debd5be1a1cd8252bb9a4045bb0c8f",
+    "revision_artifacts/2026-11/snapshots/110008_conditioned_mean_equal_spread_120.npz": "8a0c56c9b2374d25f964be1fc04944869fffa74e3833461b19e1c3ff59142722",
+    "revision_artifacts/2026-11/snapshots/110008_conditioned_mean_equal_spread_360.npz": "fe75cc77dd3e22f6cb037771f633ad0559f89c60c8ce5c7c4bdad4a0cdff853e",
+    "revision_artifacts/2026-11/snapshots/110008_conditioned_mean_equal_spread_600.npz": "91af605237ba8dc64fab5f034c99c2b4c80fc60c61e19b02257aeb1b3a1e7ebb",
+    "revision_artifacts/2026-11/snapshots/110008_unconditioned_mean_only_120.npz": "84fb703d8dd69b414e608a137f4a6c44275e9d115f4beb7c65965ce6552e0f61",
+    "revision_artifacts/2026-11/snapshots/110008_unconditioned_mean_only_360.npz": "8d97aa29d5dcf9614f5d0af36c060f8df7041a6d2f1ea0a3c0e481cefa9ce25a",
+    "revision_artifacts/2026-11/snapshots/110008_unconditioned_mean_only_600.npz": "4e3ec5cba9b73e9a26b2a71059a08380f79c4ba0313e66bc34d839cfca79487e",
+    "revision_artifacts/2026-11/snapshots/110009_conditioned_mean_equal_spread_120.npz": "562ea5fcee8d0f9f4b1caa6a7e04eceb6a346f6b799e411c019a43aa6a3634c9",
+    "revision_artifacts/2026-11/snapshots/110009_conditioned_mean_equal_spread_360.npz": "edfbf055b3f22c173fc49b3f3a8304327ca78321cf5b19d570463191bfc4957c",
+    "revision_artifacts/2026-11/snapshots/110009_conditioned_mean_equal_spread_600.npz": "1227454b2ed711d5053add05262a6d324c804c232065e543777aec6857928a3c",
+    "revision_artifacts/2026-11/snapshots/110009_unconditioned_mean_only_120.npz": "6c16c5bc0d80206cd84d1b47f2ab875974a7b9ca4df6a516aa5b7e1b0f68d65b",
+    "revision_artifacts/2026-11/snapshots/110009_unconditioned_mean_only_360.npz": "ae2db91c468805cbeb99458c46daf3b9f3e4efb6ba5a44ed3da69b0f30470405",
+    "revision_artifacts/2026-11/snapshots/110009_unconditioned_mean_only_600.npz": "e049565d5d6645fca0dda24a9b247a50abf36240f81677f94cb0d4dcca48bf41",
+    "revision_artifacts/2026-11/snapshots/110010_conditioned_mean_equal_spread_120.npz": "7326556e42afbfa1907849d5eebd545183a4a371f782fe4550a68bc18f82dca2",
+    "revision_artifacts/2026-11/snapshots/110010_conditioned_mean_equal_spread_360.npz": "355d1c1372019d7529452d428f832bce6b15d9d9e8b5dea3abee1c85d89ddf77",
+    "revision_artifacts/2026-11/snapshots/110010_conditioned_mean_equal_spread_600.npz": "2c6fe8c595b97f0d37daa8f1d82da92f4a0f69b8b3b8b1a4863b0de0a40ab6fd",
+    "revision_artifacts/2026-11/snapshots/110010_unconditioned_mean_only_120.npz": "3850299c1c8dbb051f223f228903276bdac2a942b902716e8e0407ae1e200619",
+    "revision_artifacts/2026-11/snapshots/110010_unconditioned_mean_only_360.npz": "09bc027d0d7b6aa41b65b8b05fbbdc0d573841e353917f254b4a274964bd77a2",
+    "revision_artifacts/2026-11/snapshots/110010_unconditioned_mean_only_600.npz": "acf64c5d45d7993a5ae60a6466654d4588e799384bb4ab84abcfb6533344615c",
+    "revision_artifacts/2026-11/snapshots/110011_conditioned_mean_equal_spread_120.npz": "b08f9cf07fae8a7f3c3a4e1a4e30f2dfe639f75936af68e6408b81f72692a456",
+    "revision_artifacts/2026-11/snapshots/110011_conditioned_mean_equal_spread_360.npz": "aa1b958da235c3c603b81238dbfeb280c52d45b5de4c98756df9c20845829dee",
+    "revision_artifacts/2026-11/snapshots/110011_conditioned_mean_equal_spread_600.npz": "babd66bc40c268f61544507c24134e3dafb14ef49cd6ea422cfef0af6b7f9785",
+    "revision_artifacts/2026-11/snapshots/110011_unconditioned_mean_only_120.npz": "5677c1c0d1934d2fa0bec26355f9c7a7c2a7243796b0f134760391d80be7c17e",
+    "revision_artifacts/2026-11/snapshots/110011_unconditioned_mean_only_360.npz": "b22e9d37baa78672d85dacc5720deecdd917b2a9ccbe99823f689d700def9854",
+    "revision_artifacts/2026-11/snapshots/110011_unconditioned_mean_only_600.npz": "df6b02687885d6dd399b43f5ab6dea11893b94d8e95e291f4a6faa160b615b4a",
+    "revision_artifacts/2026-11/snapshots/110012_conditioned_mean_equal_spread_120.npz": "d2e8d37071772cd8c5bfb3baca56f8607d3ecc6fa6b88649b3f9436d42698ee7",
+    "revision_artifacts/2026-11/snapshots/110012_conditioned_mean_equal_spread_360.npz": "3507df37d848daf6e93fd2a691623d08a7531c613f799cc89505a09558152189",
+    "revision_artifacts/2026-11/snapshots/110012_conditioned_mean_equal_spread_600.npz": "c193a6137b2b6369dd42d3e708e8a947c0a5676d1ec2ed87be34094180046f46",
+    "revision_artifacts/2026-11/snapshots/110012_unconditioned_mean_only_120.npz": "026619a27cecd63782edb249df67d9344da7212374712d907388d117afd291cc",
+    "revision_artifacts/2026-11/snapshots/110012_unconditioned_mean_only_360.npz": "6468c9eaea8b1d8514d4f11bfccf41731062cee8edde4775f1763005c98c1194",
+    "revision_artifacts/2026-11/snapshots/110012_unconditioned_mean_only_600.npz": "1ce861379d9edc6f7e399b7840c677f063018f891d1d22473f86e92d50fb1312",
+    "revision_artifacts/2026-11/snapshots/110013_conditioned_mean_equal_spread_120.npz": "6b7c2385d09a10deb7d8bec4edf012e79f5552c3cb5efa30e77579977996d05a",
+    "revision_artifacts/2026-11/snapshots/110013_conditioned_mean_equal_spread_360.npz": "71642b5fee7d3113acbce53d1e6d361086322376e9eea3caabaad4db85e4a0a0",
+    "revision_artifacts/2026-11/snapshots/110013_conditioned_mean_equal_spread_600.npz": "a34de35b774196c1eaea680ddee7e16e3657fbffe5bd6cf584164ce4f3a7d734",
+    "revision_artifacts/2026-11/snapshots/110013_unconditioned_mean_only_120.npz": "22c84e7026987cf5a281b0e3b5f82835de1c37738bd42d259ef7ee569518fb11",
+    "revision_artifacts/2026-11/snapshots/110013_unconditioned_mean_only_360.npz": "276c137b739b101038c2127706e96c7b8fa73a5b7e870878ff8339ce3aea25c7",
+    "revision_artifacts/2026-11/snapshots/110013_unconditioned_mean_only_600.npz": "660698cbaabd6c3727918934ba562ae19cae860f793b47e7ced759736901251b",
+    "revision_artifacts/2026-11/snapshots/110014_conditioned_mean_equal_spread_120.npz": "d2f305a9d8737c52bb6e4f2c30373dbb466dc40775fcb48cc2192c121020bb54",
+    "revision_artifacts/2026-11/snapshots/110014_conditioned_mean_equal_spread_360.npz": "f00fd32497e2f26e2aae5b4a38f8839e753779579971cab65b66a4287e4277c6",
+    "revision_artifacts/2026-11/snapshots/110014_conditioned_mean_equal_spread_600.npz": "ef99e32bac730b4dcfb7606a84c62e8a1d40f19317299f68af45110a31c5b343",
+    "revision_artifacts/2026-11/snapshots/110014_unconditioned_mean_only_120.npz": "1692b97b98cbd2111f3d054404f765ada10e6949aa47aff99d15d406534f92de",
+    "revision_artifacts/2026-11/snapshots/110014_unconditioned_mean_only_360.npz": "c961ace87497698676a0171ab28b4a01302f82579b5277a5936f900d70f1a6c5",
+    "revision_artifacts/2026-11/snapshots/110014_unconditioned_mean_only_600.npz": "468b6417b56bcc176d165eba609e31b5d0a1418ef95e1be27fd796dcc7c74c59",
+    "revision_artifacts/2026-11/snapshots/110015_conditioned_mean_equal_spread_120.npz": "a997f475248e8fc02c0a46ea1ad33d273e4c8b30e8c592e2bae6aae7f34f4ed6",
+    "revision_artifacts/2026-11/snapshots/110015_conditioned_mean_equal_spread_360.npz": "4a00d4727aa072b37c55350506de21cb05c90ce9450041bdb5f20983a50fc71f",
+    "revision_artifacts/2026-11/snapshots/110015_conditioned_mean_equal_spread_600.npz": "aa468ddb735d120bbf1dac6507e57b82379bb40c0048448a3f13aa22c3347192",
+    "revision_artifacts/2026-11/snapshots/110015_unconditioned_mean_only_120.npz": "d6f7db9e76483831614c7710c4ce2f7b0306aa37734cf12e39cd2d1859090d0c",
+    "revision_artifacts/2026-11/snapshots/110015_unconditioned_mean_only_360.npz": "95ce4c15bacfd29f94cd503ad44785e9f3c4954e787c5304fc483410ae210077",
+    "revision_artifacts/2026-11/snapshots/110015_unconditioned_mean_only_600.npz": "9a1557c7e49f42e952320fb94a61a76480a3a022ddafc3423cf09055d902bdc8",
+    "revision_artifacts/2026-11/snapshots/110016_conditioned_mean_equal_spread_120.npz": "dfa87eb61f0ed408cb5b3bd9fbf1410003fed270a703e73908cb98816be6d50b",
+    "revision_artifacts/2026-11/snapshots/110016_conditioned_mean_equal_spread_360.npz": "c05f5fbf602e39369e3063d4028bdf48afd122876cffc1a07fce1c1ed8140812",
+    "revision_artifacts/2026-11/snapshots/110016_conditioned_mean_equal_spread_600.npz": "de931ebd788632e78d24a3bd1d15cd738d514f89273fc28b37402c29526bcc95",
+    "revision_artifacts/2026-11/snapshots/110016_unconditioned_mean_only_120.npz": "fd47710464270526d4f24a713b79e997aa172f22afa3c21a8b0ee8c60cb7b536",
+    "revision_artifacts/2026-11/snapshots/110016_unconditioned_mean_only_360.npz": "6511d836b200672e5961e7c727a667ef3b0e0cab54cabfcd1d02c419ea38badb",
+    "revision_artifacts/2026-11/snapshots/110016_unconditioned_mean_only_600.npz": "e6a4b4ef2b6cba89ac6674a9e38dde7a1613f4da5376c9e0d081091319cec9ee",
+    "revision_artifacts/2026-11/snapshots/110017_conditioned_mean_equal_spread_120.npz": "a8d60e2ce197d8cb57cb3f1fea6eaacf1408106338bdd6233a34e87034187947",
+    "revision_artifacts/2026-11/snapshots/110017_conditioned_mean_equal_spread_360.npz": "fbeb02b1a179d4e68d030056cd23f9476c74b89e4fab46f08c9dad774c4ac693",
+    "revision_artifacts/2026-11/snapshots/110017_conditioned_mean_equal_spread_600.npz": "d4d63bcecc908f992614ed546823ca337e86bcef665561097b68caf16b65eaa9",
+    "revision_artifacts/2026-11/snapshots/110017_unconditioned_mean_only_120.npz": "716bcad93e5e1d5e72b3b0fa7238d189c7308ef1bf5133306f2d7ed9741311d1",
+    "revision_artifacts/2026-11/snapshots/110017_unconditioned_mean_only_360.npz": "8979463b46e0947b89f8249d8b8618dd1c237f133ac2892656436249929c13aa",
+    "revision_artifacts/2026-11/snapshots/110017_unconditioned_mean_only_600.npz": "661506edb6973d0927169e33890a1f05534351764282b18d5f93bdb14bd0dd41",
+    "revision_artifacts/2026-11/snapshots/110018_conditioned_mean_equal_spread_120.npz": "ba65c1e383bc0a852578d05e942f88be43f6dee9e617628aec34aa0e8d506355",
+    "revision_artifacts/2026-11/snapshots/110018_conditioned_mean_equal_spread_360.npz": "4496c333ef5905a7d2b486a33775c1f6b9a3a03e50a5d1cb3f1d78f7e05c87fd",
+    "revision_artifacts/2026-11/snapshots/110018_conditioned_mean_equal_spread_600.npz": "69f01908f109af8b3def009e3a04448b6e77dd2a15f64f876667d6ca9b9cef8f",
+    "revision_artifacts/2026-11/snapshots/110018_unconditioned_mean_only_120.npz": "5df3d5a5ed2452b11e7ce2d00ab653d06bc8e13e87f8edeb2c160a60b2a35df2",
+    "revision_artifacts/2026-11/snapshots/110018_unconditioned_mean_only_360.npz": "53001e65943c3a00e2ce67ae2d8e18d77a60286a8e528927c0df3339d8a3b308",
+    "revision_artifacts/2026-11/snapshots/110018_unconditioned_mean_only_600.npz": "a0e36df0db92dbd8b81a259e26bc33a4f71e635b5027a73a47083cd98c7ff3cf",
+    "revision_artifacts/2026-11/snapshots/110019_conditioned_mean_equal_spread_120.npz": "240a1d6be27f6fab8db694aa40aa51503a9277f06c3ae44d5d627e52065dd68c",
+    "revision_artifacts/2026-11/snapshots/110019_conditioned_mean_equal_spread_360.npz": "e91e2ea8300bc21a33d220a4adb15fde1d03584a0f1f4ebdfb3a33aa127258ad",
+    "revision_artifacts/2026-11/snapshots/110019_conditioned_mean_equal_spread_600.npz": "d673f54f923dcb137aba83dbdabe74be30b84fbf3a9a9914d621818af7b9f397",
+    "revision_artifacts/2026-11/snapshots/110019_unconditioned_mean_only_120.npz": "358f0592bca94f0e2e0840a355d12439a4bb3aff4aecdb5013218beefd11d3d1",
+    "revision_artifacts/2026-11/snapshots/110019_unconditioned_mean_only_360.npz": "dcabc253131b2963c37416252a8ff6d748724735bd02afc8ebb9e9703fce15e8",
+    "revision_artifacts/2026-11/snapshots/110019_unconditioned_mean_only_600.npz": "f2db466d46dc66431a5cf0ea5909bed6dd86eafc9656ced70f0b7887d68255b1",
+    "revision_artifacts/2026-11/snapshots/110020_conditioned_mean_equal_spread_120.npz": "f3f567611de6546efc442bc2598135ce847643b626bdaa498a85f66b610326c4",
+    "revision_artifacts/2026-11/snapshots/110020_conditioned_mean_equal_spread_360.npz": "b8a6a884e3aa7e11098687325a4700ce0275f1b70b2ca6acd4c4867a82f42251",
+    "revision_artifacts/2026-11/snapshots/110020_conditioned_mean_equal_spread_600.npz": "b3345a9e7b04be29c9605904e2bd8e12692679af14928cd659aa7f1643b60517",
+    "revision_artifacts/2026-11/snapshots/110020_unconditioned_mean_only_120.npz": "091904b8e885354edc934087d52171068c10aad7371379cc584de589c2b5bf68",
+    "revision_artifacts/2026-11/snapshots/110020_unconditioned_mean_only_360.npz": "ef4119c35d3d3ee1a4fdcd63261791ec7e0746a06577474e3877623bd44483fa",
+    "revision_artifacts/2026-11/snapshots/110020_unconditioned_mean_only_600.npz": "e0dcc4c94a11bd95fa0d2166873b988012ffc630cc5ccd6c45726d76e84d05d8",
+    "revision_artifacts/2026-11/snapshots/110021_conditioned_mean_equal_spread_120.npz": "a825d18c02b6fa7ff01e874665e6297e7b672622a46693d6102a3c2f13fc5b51",
+    "revision_artifacts/2026-11/snapshots/110021_conditioned_mean_equal_spread_360.npz": "13d3860a8bacff34dc759f99a5ba15ef90a7c46a9d9c70acad1aded91cc630df",
+    "revision_artifacts/2026-11/snapshots/110021_conditioned_mean_equal_spread_600.npz": "0dcc480b46de61f32cb176cce326b7776d593966b1ccc229d947a38169bb06ac",
+    "revision_artifacts/2026-11/snapshots/110021_unconditioned_mean_only_120.npz": "390e0e0567cf1688c226c82108848c69b256f144b0e6b59aac16412801886d57",
+    "revision_artifacts/2026-11/snapshots/110021_unconditioned_mean_only_360.npz": "5a4edf860f7863e7f53822853721b561ce0ae6370ed0a2fdb7aacad73f8abd08",
+    "revision_artifacts/2026-11/snapshots/110021_unconditioned_mean_only_600.npz": "54554e37c3bc0d651cc009d562726c376a0f3509058a05b2c0a93b5022f2b18a",
+    "revision_artifacts/2026-11/snapshots/110022_conditioned_mean_equal_spread_120.npz": "ad0c8b3a57ec724e282ed38a69efdf33ae80ad7c97d09634fb1273edeb48804f",
+    "revision_artifacts/2026-11/snapshots/110022_conditioned_mean_equal_spread_360.npz": "0bcc8878b86e7b1a4a73942309dabb938a669c22eb6a6ea125597248606c6251",
+    "revision_artifacts/2026-11/snapshots/110022_conditioned_mean_equal_spread_600.npz": "0a5845c3c69bc08f390768c9f848cbd97a796ae6202aebc9d1404eef16055a86",
+    "revision_artifacts/2026-11/snapshots/110022_unconditioned_mean_only_120.npz": "cb05ff19cec09517d5171d38078954e660703297bd1b6c06cc8e23a961f05010",
+    "revision_artifacts/2026-11/snapshots/110022_unconditioned_mean_only_360.npz": "5f7961355bad503323291da7b782b8cc3f69c17b16bfed471596d44d93a31ce2",
+    "revision_artifacts/2026-11/snapshots/110022_unconditioned_mean_only_600.npz": "933c1b379f92f718c9fd9910161271c2e0d846f6519b1c86c8bec3fa9d9eac16",
+    "revision_artifacts/2026-11/snapshots/110023_conditioned_mean_equal_spread_120.npz": "208aff2b0d41c9f08f17a867d13c1ff449e482055394f0a2c2fe4f6741a34703",
+    "revision_artifacts/2026-11/snapshots/110023_conditioned_mean_equal_spread_360.npz": "ed8de6c952f29f006682e87692408d022faaad04ae8b80df289ba3018a334912",
+    "revision_artifacts/2026-11/snapshots/110023_conditioned_mean_equal_spread_600.npz": "cab6985a9a9fb5f3c7f94756e55832cfd8454127188b341c98d991c76595125b",
+    "revision_artifacts/2026-11/snapshots/110023_unconditioned_mean_only_120.npz": "4073dd0a641f275315fbb93a6873a26988b840c02c01bbd8f7bd116a6b1918a9",
+    "revision_artifacts/2026-11/snapshots/110023_unconditioned_mean_only_360.npz": "a8e1c2062f4cc14c3b6f6396a772ac1d806db37ebf3a10d0f5b9829bcfa4acc2",
+    "revision_artifacts/2026-11/snapshots/110023_unconditioned_mean_only_600.npz": "15a0c3d1c66d65ab72f6315d1de46e159f5231a85e22bb4aab26cf126d0e2072",
+    "revision_artifacts/2026-11/snapshots/110024_conditioned_mean_equal_spread_120.npz": "4b2e899579c1953ba5e927b3e5d233acd4e7d6b48ee653f58dac688fbb0ea32d",
+    "revision_artifacts/2026-11/snapshots/110024_conditioned_mean_equal_spread_360.npz": "309445ea8ac844d0e50cd405c26f12482720eba8866d7087c4301e0f9ec9928d",
+    "revision_artifacts/2026-11/snapshots/110024_conditioned_mean_equal_spread_600.npz": "a89e8c1c315d77627f9645612e02f121678f00472cde405dfa342ee634cc1a64",
+    "revision_artifacts/2026-11/snapshots/110024_unconditioned_mean_only_120.npz": "b69f8200bfd8239738f591576f8b9084028e8c3bd1870839b2855c7fffa19fe6",
+    "revision_artifacts/2026-11/snapshots/110024_unconditioned_mean_only_360.npz": "7b7c7fff103f2de24740de5e9a3e0b0e5cbfb9135efbef4369e0123e14609ebb",
+    "revision_artifacts/2026-11/snapshots/110024_unconditioned_mean_only_600.npz": "9fb10ef50d70288cd2e67e20f182884d56905f903c21dbf310c236d446545ce8",
+    "revision_artifacts/2026-11/snapshots/110025_conditioned_mean_equal_spread_120.npz": "3b952316ab8be23f21984e1fa249a3c9dc8513773c0487726bcb3b7575e6992c",
+    "revision_artifacts/2026-11/snapshots/110025_conditioned_mean_equal_spread_360.npz": "d802e9a796942b8b087afd2abde6d2922e04eee9a05244c80781a9a902131c9a",
+    "revision_artifacts/2026-11/snapshots/110025_conditioned_mean_equal_spread_600.npz": "bb9033a8f6e8e6dc76fb23118f0f3c8ebc8fd2e92c428e36d6b4079cff044975",
+    "revision_artifacts/2026-11/snapshots/110025_unconditioned_mean_only_120.npz": "8f702ecb81e7425c69c9b1decf214bec555d8073acd8ba24de3902ac5e54024d",
+    "revision_artifacts/2026-11/snapshots/110025_unconditioned_mean_only_360.npz": "2481cf02b8b1b33d66510965eb1327ec150bfb787824b2e6ef19da61933c47a9",
+    "revision_artifacts/2026-11/snapshots/110025_unconditioned_mean_only_600.npz": "dbdd13fc6b7b81cd7086d04f3c504946af735bf9fd67fb540ef85f77945d843f",
+    "revision_artifacts/2026-11/snapshots/110026_conditioned_mean_equal_spread_120.npz": "26034ef35fdeaab9d144fd7c6de8e2e6d83adfcaea30528bd3f765ac19273b18",
+    "revision_artifacts/2026-11/snapshots/110026_conditioned_mean_equal_spread_360.npz": "ec2fc79d070fd5a130a99c6b8c831fc01cdf7674de4592301ddbc3411e9479b9",
+    "revision_artifacts/2026-11/snapshots/110026_conditioned_mean_equal_spread_600.npz": "c6952b36eedc8fc62bb7830243d3fad1b41ada27ae0a1724b4f8afadad694c10",
+    "revision_artifacts/2026-11/snapshots/110026_unconditioned_mean_only_120.npz": "fd3fcbd7e8c970ba6f1683203530af6a59fdb5c21fb36e8ded26467389c97515",
+    "revision_artifacts/2026-11/snapshots/110026_unconditioned_mean_only_360.npz": "833bc01b591102c34c702e7b9b873013c66e8b86d0ae4ae7c3fb187ef436f83e",
+    "revision_artifacts/2026-11/snapshots/110026_unconditioned_mean_only_600.npz": "bd37712aa7e59d1cbb9de0a8e71097966587f97b0d59df3584e31000f1863e28",
+    "revision_artifacts/2026-11/snapshots/110027_conditioned_mean_equal_spread_120.npz": "ab4762cc3c913715495e52eb0aa2ad95d01e531da5906f2007a5e71fe473e7a1",
+    "revision_artifacts/2026-11/snapshots/110027_conditioned_mean_equal_spread_360.npz": "74aefecd262fc533ab4200ecdebe344a40241438f814fe3df3c94021624cfc07",
+    "revision_artifacts/2026-11/snapshots/110027_conditioned_mean_equal_spread_600.npz": "455110719bb363965d2aa57f9bb7f32c6a6e77893036c82d72a2985b19f0cddb",
+    "revision_artifacts/2026-11/snapshots/110027_unconditioned_mean_only_120.npz": "eddffa24bb46297ad6d706a09aedfa08c05b3513a99566ad138d72280d8bc6c4",
+    "revision_artifacts/2026-11/snapshots/110027_unconditioned_mean_only_360.npz": "11985e3007907826db571e24e3950cab77bbf085534c01b62f282d73633f9332",
+    "revision_artifacts/2026-11/snapshots/110027_unconditioned_mean_only_600.npz": "da31c4fa444049f39053634ed7b7793c1fa7b9350b3e6dc55d3538b520432d38",
+    "revision_artifacts/2026-11/snapshots/110028_conditioned_mean_equal_spread_120.npz": "95f3e6660fa9db09bd0ec14259f8fe0644c841963cde53bd537c70992f7902b2",
+    "revision_artifacts/2026-11/snapshots/110028_conditioned_mean_equal_spread_360.npz": "4d76ade0339e88f4eba595cf7657214effc8ffe5fc8bcec1e7f10d1815caf415",
+    "revision_artifacts/2026-11/snapshots/110028_conditioned_mean_equal_spread_600.npz": "c4b8c6394bb6aee64e478dee71a1000e04a2074d86d51f68f490a9656ad8417e",
+    "revision_artifacts/2026-11/snapshots/110028_unconditioned_mean_only_120.npz": "a4d43d21ca91430c2df212e57500de6acb7e85a7aa40cb70b183de25a7ce7cf0",
+    "revision_artifacts/2026-11/snapshots/110028_unconditioned_mean_only_360.npz": "bce8ecea5bcae910646be3b6dd8a989efe5ccef0189cf2f7267c5cc465af186a",
+    "revision_artifacts/2026-11/snapshots/110028_unconditioned_mean_only_600.npz": "6ac4540ac317f6fdd78a007b844fe8c8002d78b26c5c8a9af0dc9a9746bfa68e",
+    "revision_artifacts/2026-11/snapshots/110029_conditioned_mean_equal_spread_120.npz": "727a04ab94f7609a19158d8dacffd32582bb9ac41e4985884f89b1ae4de23305",
+    "revision_artifacts/2026-11/snapshots/110029_conditioned_mean_equal_spread_360.npz": "739437131912da2b543ca2100cfda31c07f96a454f45f03218d5637102a231b5",
+    "revision_artifacts/2026-11/snapshots/110029_conditioned_mean_equal_spread_600.npz": "3d49fd811a0a613b18bcddfcf647658a572ec542198e42a59f76f1171aa89e9c",
+    "revision_artifacts/2026-11/snapshots/110029_unconditioned_mean_only_120.npz": "80f1df5d7538d623cf077594fd5b723b879216064900a2349bb273e448c439bf",
+    "revision_artifacts/2026-11/snapshots/110029_unconditioned_mean_only_360.npz": "c75e4a10e1e442998b466591c11f6cc129a8f290f2d29ad88f89a1a0bd1317be",
+    "revision_artifacts/2026-11/snapshots/110029_unconditioned_mean_only_600.npz": "247788edb1258c959e77e36fca66e79625382754723a89a8ecc29032d36a3009"
+  },
+  "font_audit": {
+    "fig1_system_overview": {
+      "width_inches": 7.139892071398921,
+      "height_inches": 2.88,
+      "pdf_width_points": 514.0722291407224,
+      "latex_width_tex_points": 516,
+      "placement": "width=\\textwidth",
+      "all_text_inside_canvas": true,
+      "min_main_label_points": 7.2,
+      "text": [
+        {
+          "text": "Sources",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Corridors",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Z1\n$n=1400$",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Z2\n$n=1200$",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Z3\n$n=1000$",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Z4\n$n=1400$",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Queue\nstate\n$R,Q,Y$\n$W,D$",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Corridor A",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Corridor B",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Corridor C",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "(a) Queue benchmark",
+          "source_points": 8.5,
+          "effective_points_at_textwidth": 8.5
+        },
+        {
+          "text": "Observe\nqueues + saturated\nthroughput",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Estimate\npersistent capacity",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Predict\ncommon spread; prior\nor estimated center",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Choose\nbest of 16 candidates",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Guide\nroute shares for 120 s",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Feedback",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "(b) Center-only ablation",
+          "source_points": 8.5,
+          "effective_points_at_textwidth": 8.5
+        },
+        {
+          "text": "-0.9",
+          "source_points": 8.0,
+          "effective_points_at_textwidth": 8.0
+        },
+        {
+          "text": "-1.8",
+          "source_points": 8.0,
+          "effective_points_at_textwidth": 8.0
+        },
+        {
+          "text": "-4.6",
+          "source_points": 8.0,
+          "effective_points_at_textwidth": 8.0
+        },
+        {
+          "text": "-4.5",
+          "source_points": 8.0,
+          "effective_points_at_textwidth": 8.0
+        },
+        {
+          "text": "-1.4",
+          "source_points": 8.0,
+          "effective_points_at_textwidth": 8.0
+        },
+        {
+          "text": "-2.4",
+          "source_points": 8.0,
+          "effective_points_at_textwidth": 8.0
+        },
+        {
+          "text": "-4.0",
+          "source_points": 8.0,
+          "effective_points_at_textwidth": 8.0
+        },
+        {
+          "text": "-4.4",
+          "source_points": 8.0,
+          "effective_points_at_textwidth": 8.0
+        },
+        {
+          "text": "-0.1*",
+          "source_points": 8.0,
+          "effective_points_at_textwidth": 8.0
+        },
+        {
+          "text": "-0.3",
+          "source_points": 8.0,
+          "effective_points_at_textwidth": 8.0
+        },
+        {
+          "text": "-0.9",
+          "source_points": 8.0,
+          "effective_points_at_textwidth": 8.0
+        },
+        {
+          "text": "-2.0",
+          "source_points": 8.0,
+          "effective_points_at_textwidth": 8.0
+        },
+        {
+          "text": "+0.0*",
+          "source_points": 8.0,
+          "effective_points_at_textwidth": 8.0
+        },
+        {
+          "text": "+0.0*",
+          "source_points": 8.0,
+          "effective_points_at_textwidth": 8.0
+        },
+        {
+          "text": "+0.0*",
+          "source_points": 8.0,
+          "effective_points_at_textwidth": 8.0
+        },
+        {
+          "text": "+0.0*",
+          "source_points": 8.0,
+          "effective_points_at_textwidth": 8.0
+        },
+        {
+          "text": "Mean compliance",
+          "source_points": 7.5,
+          "effective_points_at_textwidth": 7.5
+        },
+        {
+          "text": "0.35",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "0.5",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "0.68",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "0.85",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Capacity uncertainty, $\\sigma$",
+          "source_points": 7.5,
+          "effective_points_at_textwidth": 7.5
+        },
+        {
+          "text": "0.45",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "0.3",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "0.15",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "0",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "(c) Information value",
+          "source_points": 8.5,
+          "effective_points_at_textwidth": 8.5
+        }
+      ]
+    },
+    "fig2_performance_landscape": {
+      "width_inches": 7.139892071398921,
+      "height_inches": 3.6,
+      "pdf_width_points": 514.0722291407224,
+      "latex_width_tex_points": 516,
+      "placement": "width=\\textwidth",
+      "all_text_inside_canvas": true,
+      "min_main_label_points": 7.2,
+      "text": [
+        {
+          "text": "981.30",
+          "source_points": 8.0,
+          "effective_points_at_textwidth": 8.0
+        },
+        {
+          "text": "708.80",
+          "source_points": 8.0,
+          "effective_points_at_textwidth": 8.0
+        },
+        {
+          "text": "721.45",
+          "source_points": 8.0,
+          "effective_points_at_textwidth": 8.0
+        },
+        {
+          "text": "705.80",
+          "source_points": 8.0,
+          "effective_points_at_textwidth": 8.0
+        },
+        {
+          "text": "696.90",
+          "source_points": 8.0,
+          "effective_points_at_textwidth": 8.0
+        },
+        {
+          "text": "Mean clearance (s)",
+          "source_points": 7.5,
+          "effective_points_at_textwidth": 7.5
+        },
+        {
+          "text": "700",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "850",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "1000",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Static",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Reactive",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Unconditioned",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Conditioned",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Oracle",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Mean -15.65 s",
+          "source_points": 8.0,
+          "effective_points_at_textwidth": 8.0
+        },
+        {
+          "text": "Faster / tied / slower\n45% / 46% / 9%",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Paired C \u2212 U clearance (s)",
+          "source_points": 7.5,
+          "effective_points_at_textwidth": 7.5
+        },
+        {
+          "text": "\u2212200",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "\u2212100",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "0",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "50",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Seed count",
+          "source_points": 7.5,
+          "effective_points_at_textwidth": 7.5
+        },
+        {
+          "text": "0",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "40",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "80",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "-15.65 [-20.75, -10.80] s",
+          "source_points": 8.0,
+          "effective_points_at_textwidth": 8.0
+        },
+        {
+          "text": "-3.00 [-7.50, +1.35] s",
+          "source_points": 8.0,
+          "effective_points_at_textwidth": 8.0
+        },
+        {
+          "text": "+12.65 [+5.95, +19.60] s",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "-8.90 [-11.85, -6.25] s",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Paired clearance difference (s)",
+          "source_points": 7.5,
+          "effective_points_at_textwidth": 7.5
+        },
+        {
+          "text": "\u221220",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "0",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "20",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "C \u2212 U",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "C \u2212 Reactive",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "U \u2212 Reactive",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Oracle \u2212 C",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Elapsed time (s)",
+          "source_points": 7.5,
+          "effective_points_at_textwidth": 7.5
+        },
+        {
+          "text": "0",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "300",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "600",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Capacity MAE",
+          "source_points": 7.5,
+          "effective_points_at_textwidth": 7.5
+        },
+        {
+          "text": "0.0",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "0.1",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "0.2",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Mean MAE",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "MAE 10th\u201390th pct.",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Ever observed links",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Observed (%)",
+          "source_points": 7.5,
+          "effective_points_at_textwidth": 7.5
+        },
+        {
+          "text": "0",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "50",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "100",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "(a) Policy means",
+          "source_points": 8.5,
+          "effective_points_at_textwidth": 8.5
+        },
+        {
+          "text": "(b) Paired clearance differences",
+          "source_points": 8.5,
+          "effective_points_at_textwidth": 8.5
+        },
+        {
+          "text": "(c) Matched effects (C: conditioned; U: unconditioned)",
+          "source_points": 8.5,
+          "effective_points_at_textwidth": 8.5
+        },
+        {
+          "text": "(d) Estimator diagnostics",
+          "source_points": 8.5,
+          "effective_points_at_textwidth": 8.5
+        }
+      ]
+    },
+    "fig3_context_validation": {
+      "width_inches": 7.139892071398921,
+      "height_inches": 2.7,
+      "pdf_width_points": 514.0722291407224,
+      "latex_width_tex_points": 516,
+      "placement": "width=\\textwidth",
+      "all_text_inside_canvas": true,
+      "min_main_label_points": 7.2,
+      "text": [
+        {
+          "text": "Time step $\\Delta t$ (s)",
+          "source_points": 7.5,
+          "effective_points_at_textwidth": 7.5
+        },
+        {
+          "text": "10",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "5",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "2.5",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Paired effect $\\Delta T$ (s)",
+          "source_points": 7.5,
+          "effective_points_at_textwidth": 7.5
+        },
+        {
+          "text": "\u221240",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "\u221220",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "0",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "C \u2212 U",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "C \u2212 reactive",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "-2.6 [-5.0, -0.6]",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "-3.4 [-6.6, -0.6]",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "C \u2212 U (s)",
+          "source_points": 7.5,
+          "effective_points_at_textwidth": 7.5
+        },
+        {
+          "text": "\u221240",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "\u221220",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "0",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Base asymmetric",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Symmetric",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Path bottleneck",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Exit bottleneck",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Expanded 5\u00d74",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "C \u2212 U (s)",
+          "source_points": 7.5,
+          "effective_points_at_textwidth": 7.5
+        },
+        {
+          "text": "\u2212100",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "\u221250",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "0",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Clean",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Noise 0.15",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Delay 60 s",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Dropout 20%",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Bias +10%",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Default",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "High-info",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "(b) Network families",
+          "source_points": 8.5,
+          "effective_points_at_textwidth": 8.5
+        },
+        {
+          "text": "(a) Time-step sensitivity",
+          "source_points": 8.5,
+          "effective_points_at_textwidth": 8.5
+        },
+        {
+          "text": "(c) Estimate faults",
+          "source_points": 8.5,
+          "effective_points_at_textwidth": 8.5
+        }
+      ]
+    },
+    "fig4_decision_diagnostics": {
+      "width_inches": 7.139892071398921,
+      "height_inches": 2.2,
+      "pdf_width_points": 514.0722291407224,
+      "latex_width_tex_points": 516,
+      "placement": "width=\\textwidth",
+      "all_text_inside_canvas": true,
+      "min_main_label_points": 7.2,
+      "text": [
+        {
+          "text": "28.9%",
+          "source_points": 8.0,
+          "effective_points_at_textwidth": 8.0
+        },
+        {
+          "text": "14.4%",
+          "source_points": 8.0,
+          "effective_points_at_textwidth": 8.0
+        },
+        {
+          "text": "Unconditioned",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Conditioned",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Completed decisions (%)",
+          "source_points": 7.5,
+          "effective_points_at_textwidth": 7.5
+        },
+        {
+          "text": "0",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "10",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "20",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "30",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "40",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "(a) Fixed-action rank reversals",
+          "source_points": 8.5,
+          "effective_points_at_textwidth": 8.5
+        },
+        {
+          "text": "Unconditioned",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Conditioned",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "Residual clearance difference (s)",
+          "source_points": 7.5,
+          "effective_points_at_textwidth": 7.5
+        },
+        {
+          "text": "\u22128",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "\u22124",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "0",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "4",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "8",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "(b) Same-state action effects",
+          "source_points": 8.5,
+          "effective_points_at_textwidth": 8.5
+        },
+        {
+          "text": "Fixed to clearance",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        },
+        {
+          "text": "120 s, then reactive",
+          "source_points": 7.2,
+          "effective_points_at_textwidth": 7.2
+        }
+      ]
+    }
+  }
+}
